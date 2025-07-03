@@ -63,7 +63,7 @@
     "zone.js": "~0.14.3"
   },
   "engines": {
-  "node": ">=18.18.0 <21"
+    "node": ">=18.18.0 <21"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^18.0.3",
