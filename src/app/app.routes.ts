@@ -10,7 +10,7 @@ import { MaintenanceComponent } from '@views/extra/maintenance/maintenance.compo
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'dashboards/analytics',
+    redirectTo: 'auth/sign-in',
     pathMatch: 'full',
   },
   {
