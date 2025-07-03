@@ -1,0 +1,90 @@
+/* You can add global styles to this file, and also import other style files */
+@import "nouislider/dist/nouislider.css";
+@import "ngx-toastr/toastr";
+@import "flatpickr/dist/flatpickr.css";
+@import "quill/dist/quill.snow.css";
+@import "quill/dist/quill.bubble.css";
+// @import "simplebar/dist/simplebar.css";
+@import "../public/assets/scss/app.scss";
+@import "../public/assets/scss/icons.scss";
+$mainColor:#036F62;
+
+.form {
+  .input-field {
+    border-radius: 1.5625rem;
+    padding: 0.625rem;
+    padding-top: 15px;
+    border: none !important;
+    border-bottom: 1px solid #d8d8d8 !important;
+    background-color: transparent;
+    transition: background-color 0.3s;
+
+    &::placeholder {
+      font-size: 0.875rem;
+      color: #8f8f8f;
+    }
+
+    &:focus,&:not(:placeholder-shown) {
+      box-shadow: 0 4px 2px #008d7a4e !important;
+      background-color: #ffffffde;
+    }
+  }
+  .icon-description, .icon-title, .icon-price, .icon-area, .icon-city, .icon-location, .icon-rooms{
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: all .3s;
+    pointer-events: none;
+    img {
+      width: 20px;
+      height: 20px;
+    }
+    span {
+      font-size: 0.875rem;
+      color: #8f8f8f;
+    }
+  }
+  .input-field:focus ~ .icon-title,
+  .input-field:not(:placeholder-shown) ~ .icon-title,
+  .input-field:focus ~ .icon-description,
+  .input-field:not(:placeholder-shown) ~ .icon-description,
+  .input-field:focus ~ .icon-price,
+  .input-field:not(:placeholder-shown) ~ .icon-price,
+  .input-field:focus ~ .icon-area,
+  .input-field:not(:placeholder-shown) ~ .icon-area,
+  .input-field:focus ~ .icon-city,
+  .input-field:not(:placeholder-shown) ~ .icon-city,
+  .input-field:focus ~ .icon-location,
+  .input-field:not(:placeholder-shown) ~ .icon-location,
+  .input-field:focus ~ .icon-rooms,
+  .input-field:not(:placeholder-shown) ~ .icon-rooms {
+    top: 0;
+    left: 0;
+  }
+  .btn-submit, .btn-update {
+    border: 1.3px solid $mainColor;
+    color: $mainColor;
+    border-radius: 1.5625rem;
+    padding: 0.3125rem 2.625rem;
+    transition: all 0.3s;
+    font-weight: 600;
+    &:hover {
+      color: #fff;
+    }
+  }
+  .btn-submit {
+    border: 1.3px solid $mainColor;
+    color: $mainColor;
+    &:hover {
+      background: $mainColor;
+    }
+  }
+  .btn-update {
+    border: 1.3px solid gold;
+    color: gold;
+    &:hover {
+      background: gold;
+    }
+  }
+}

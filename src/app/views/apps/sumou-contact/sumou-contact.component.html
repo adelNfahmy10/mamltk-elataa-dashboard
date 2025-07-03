@@ -1,0 +1,164 @@
+<app-page-title title="Sumou" subTitle="Contact Us" />
+
+<section class="about-sumout">
+  <div class="form card p-3">
+    <form class="row g-3" [formGroup]="contactForm">
+      <div class="col-md-6 col-12 position-relative input-container">
+        <input type="tel" formControlName="phone1" class="form-control input-field" name="phone1" id="phone1" placeholder=" ">
+        <div class="icon-title d-flex justify-content-start align-items-center gap-1 w-100">
+            <i class="ri-phone-line fs-24 button-sm-hover-icon"></i>
+          <span>Phone No1.</span>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-12 position-relative input-container">
+        <input type="tel" formControlName="phone2" class="form-control input-field" name="phone2" id="phone2" placeholder=" ">
+        <div class="icon-title d-flex justify-content-start align-items-center gap-1 w-100">
+            <i class="ri-phone-line fs-24 button-sm-hover-icon"></i>
+            <span>Phone No2.</span>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-12 position-relative input-container">
+        <input type="text" formControlName="facebookUrl" class="form-control input-field" name="facebookUrl" id="facebookUrl" placeholder=" ">
+        <div class="icon-title d-flex justify-content-start align-items-center gap-1 w-100">
+          <i class="ri-facebook-box-line fs-24 button-sm-hover-icon"></i>
+          <span>Facebook Url</span>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-12 position-relative input-container">
+        <input type="text" formControlName="twitterUrl" class="form-control input-field" name="twitterUrl" id="twitterUrl" placeholder=" ">
+        <div class="icon-title d-flex justify-content-start align-items-center gap-1 w-100">
+          <i class="ri-twitter-line fs-24 button-sm-hover-icon"></i>
+          <span>Twitter Url</span>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-12 position-relative input-container">
+        <input type="text" formControlName="linkedInUrl" class="form-control input-field" name="linkedInUrl" id="linkedInUrl" placeholder=" ">
+        <div class="icon-title d-flex justify-content-start align-items-center gap-1 w-100">
+          <i class="ri-linkedin-box-line fs-24 button-sm-hover-icon"></i>
+          <span>LinkedIn Url</span>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-12 position-relative input-container">
+        <input type="text" formControlName="instagramUrl" class="form-control input-field" name="instagramUrl" id="instagramUrl" placeholder=" ">
+        <div class="icon-title d-flex justify-content-start align-items-center gap-1 w-100">
+          <i class="ri-instagram-line fs-24 button-sm-hover-icon"></i>
+          <span>Instagram Url</span>
+        </div>
+      </div>
+
+      <div class="col-12 position-relative input-container">
+        <textarea formControlName="address" class="form-control input-field" name="address" id="address" placeholder=" "></textarea>
+        <div class="icon-title d-flex justify-content-start align-items-center gap-1 w-100">
+          <i class="ri-pages-line fs-24 button-sm-hover-icon"></i>
+          <span>Address</span>
+        </div>
+      </div>
+
+      <div class="d-flex flex-column justify-content-between align-items-center">
+        @if(update){
+          <button class="btn btn-update" (click)="UpdateContact()">Update</button>
+        } @else {
+          <button class="btn btn-submit" (click)="submitContactForm()">Submit</button>
+        }
+      </div>
+    </form>
+  </div>
+
+
+   <div class="row">
+    <div class="col-xl-12">
+      <div class="card">
+        <div
+          class="card-header d-flex justify-content-between align-items-center border-bottom"
+        >
+          <div>
+            <h4 class="card-title">All Contacts</h4>
+          </div>
+          <div ngbDropdown>
+            <a
+              ngbDropdownToggle
+              class="btn btn-sm btn-outline-light rounded"
+              role="button"
+            >
+              This Month
+            </a>
+            <div ngbDropdownMenu class="dropdown-menu-end">
+              <a href="javascript:void(0);" class="dropdown-item">Download</a>
+
+              <a href="javascript:void(0);" class="dropdown-item">Export</a>
+
+              <a href="javascript:void(0);" class="dropdown-item">Import</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table align-middle text-nowrap table-hover table-centered mb-0">
+              <thead class="bg-light-subtle">
+                <tr>
+                  <th>Phone No1.</th>
+                  <th>Phone No2.</th>
+                  <th>Address</th>
+                  <th>FaceBook</th>
+                  <th>LinkedIn</th>
+                  <th>Instagram</th>
+                  <th style="white-space: nowrap;">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of pagedData; track $index) {
+                  <tr>
+                    <td>{{ item.phone1 }}</td>
+                    <td>{{ item.phone2 }}</td>
+                    <td>{{ item.address }}</td>
+                    <td>{{ item.facebookUrl }}</td>
+                    <td>{{ item.twitterUrl }}</td>
+                    <td>{{ item.linkedInUrl }}</td>
+                    <td>{{ item.instagramUrl }}</td>
+                    <td>
+                      <div class="d-flex gap-2">
+                        <a href="javascript:void(0);" class="btn btn-soft-primary btn-sm">
+                          <iconify-icon
+                            (click)="patchContactData(item)"
+                            icon="solar:pen-2-broken"
+                            class="align-middle fs-18"
+                          ></iconify-icon>
+                        </a>
+                        <a href="javascript:void(0);" class="btn btn-soft-danger btn-sm" (click)="DeleteContact(item.id)">
+                          <iconify-icon
+                            icon="solar:trash-bin-minimalistic-2-broken"
+                            class="align-middle fs-18"
+                          ></iconify-icon>
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card-footer border-top">
+          <nav aria-label="Page navigation example">
+            <ngb-pagination
+              [collectionSize]="totalItems"
+              [(page)]="currentPage"
+              [pageSize]="pageSize"
+              class="pagination justify-content-end mb-0"
+            >
+              <ng-template ngbPaginationPrevious>Previous</ng-template>
+              <ng-template ngbPaginationNext>Next</ng-template>
+            </ngb-pagination>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
