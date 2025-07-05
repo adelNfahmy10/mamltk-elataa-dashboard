@@ -24,6 +24,7 @@
               "zone.js",
               "@angular/localize/init"
             ],
+            "externalDependencies": ["@angular/localize/init"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
