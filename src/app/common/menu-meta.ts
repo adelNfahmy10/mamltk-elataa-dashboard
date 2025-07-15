@@ -31,18 +31,18 @@ export type TabMenuItem = {
 export const MENU_ITEMS: MenuItemType[] = [
   {
     key: 'menu',
-    label: 'MENU',
+    label: 'القائمة',
     isTitle: true,
   },
   {
     key: 'dashboards',
-    label: 'Dashboards',
+    label: 'الإحصائيات',
     icon: 'ri-dashboard-2-line',
     collapsed: false,
     children: [
       {
         key: 'analytics',
-        label: 'Analytics',
+        label: 'التحليلات',
         url: '/dashboards/analytics',
         parentKey: 'dashboards',
       },
@@ -158,31 +158,31 @@ export const MENU_ITEMS: MenuItemType[] = [
   // },
   {
     key: 'projects',
-    label: 'Projects',
+    label: 'المشروعات',
     icon: 'ri-building-2-line',
     url: '/projects',
   },
   {
     key: 'about',
-    label: 'About Us',
+    label: 'من نحن',
     icon: 'ri-building-2-line',
     url: '/about',
   },
   {
     key: 'contracting',
-    label: 'Contracting',
+    label: 'المقاولات',
     icon: 'ri-building-2-line',
     url: '/contracting',
   },
   {
     key: 'configuration',
-    label: 'Configuration',
+    label: 'طلب التواصل',
     icon: 'ri-building-2-line',
     url: '/configuration',
   },
   {
     key: 'contact',
-    label: 'Contact Us',
+    label: 'تواصل معنا',
     icon: 'ri-building-2-line',
     url: '/contact',
   },

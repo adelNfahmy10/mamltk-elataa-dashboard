@@ -13,6 +13,14 @@ export class ProjectsService {
     return this._HttpClient.get(`${environment.baseURL}api/Projects/GetAllProjects`)
   }
 
+  GetAllOwnershipProjects():Observable<any>{
+    return this._HttpClient.get(`${environment.baseURL}api/Projects/GetAllOwnershipProjects`)
+  }
+
+  GetAllRealEstateOffers():Observable<any>{
+    return this._HttpClient.get(`${environment.baseURL}api/Projects/GetAllRealEstateOffers`)
+  }
+
   getAllHeaders():Observable<any>{
     return this._HttpClient.get(`${environment.baseURL}api/Projects/GetAllHeaders`)
   }

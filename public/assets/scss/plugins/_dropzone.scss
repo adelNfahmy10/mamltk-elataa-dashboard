@@ -1,6 +1,6 @@
-// 
+//
 // dropzone.scss
-// 
+//
 
 // .dropzone {
 //      border: 2px dashed $input-border-color;
@@ -31,15 +31,15 @@
     background: var(--bs-light-bg-subtle);
     border-radius: 6px !important;
     cursor: pointer;
-    min-height: 150px !important;
+    min-height: 100px !important;
     // padding: 20px !important;
-    padding-top: 3.75rem !important;
-    padding-bottom: 3.75rem !important;
+    // padding-top: 3.75rem !important;
+    // padding-bottom: 3.75rem !important;
 
     .dz-message {
       text-align: center;
       margin: 2rem 0;
-      height: 150px;
+      height: 100px;
       background-color: var(--bs-light-bg-subtle) !important;
       border: 0;
       overflow: hidden;
@@ -52,7 +52,7 @@
     }
     &.dz-started {
       .dz-message {
-        display: none;
+        display: none !important;
       }
     }
   }

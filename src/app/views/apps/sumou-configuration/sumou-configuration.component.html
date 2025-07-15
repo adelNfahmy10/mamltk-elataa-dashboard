@@ -1,13 +1,13 @@
-<app-page-title title="Sumou" subTitle="Configuration" />
+<app-page-title title="مملكة العطاء" subTitle="طلب التواصل" />
 
-<section class="about-sumout">
+<section class="configuration-sumou">
   <div class="form card p-3">
     <form class="row g-3" [formGroup]="configForm">
       <div class="col-md-6 col-12 position-relative input-container">
         <input type="text" formControlName="email" class="form-control input-field" name="email" id="email" placeholder=" ">
         <div class="icon-title d-flex justify-content-start align-items-center gap-1 w-100">
           <i class="ri-pages-line fs-24 button-sm-hover-icon"></i>
-          <span>Email</span>
+          <span>البريد الإلكتروني</span>
         </div>
       </div>
 
@@ -15,15 +15,15 @@
         <input type="tel" formControlName="phoneNumber" class="form-control input-field" name="phone" id="phone" placeholder=" ">
         <div class="icon-title d-flex justify-content-start align-items-center gap-1 w-100">
           <i class="ri-phone-line fs-24 button-sm-hover-icon"></i>
-          <span>Phone No.</span>
+          <span>التليفون</span>
         </div>
       </div>
 
       <div class="d-flex flex-column justify-content-between align-items-center">
         @if(update){
-          <button class="btn btn-update" (click)="UpdateConfiguration()">Update</button>
+          <button class="btn btn-update" (click)="UpdateConfiguration()">تعديل</button>
         } @else {
-          <button class="btn btn-submit" (click)="submitConfigForm()">Submit</button>
+          <button class="btn btn-submit" (click)="submitConfigForm()">حفظ</button>
         }
       </div>
     </form>
@@ -37,9 +37,9 @@
           class="card-header d-flex justify-content-between align-items-center border-bottom"
         >
           <div>
-            <h4 class="card-title">All Configurations</h4>
+            <h4 class="card-title">طلبات التواصل</h4>
           </div>
-          <div ngbDropdown>
+          <!-- <div ngbDropdown>
             <a
               ngbDropdownToggle
               class="btn btn-sm btn-outline-light rounded"
@@ -54,7 +54,7 @@
 
               <a href="javascript:void(0);" class="dropdown-item">Import</a>
             </div>
-          </div>
+          </div> -->
         </div>
 
         <div class="card-body p-0">
@@ -62,9 +62,9 @@
             <table class="table align-middle text-nowrap table-hover table-centered mb-0">
               <thead class="bg-light-subtle">
                 <tr>
-                  <th style="width: 50%">Email</th>
-                  <th style="width: 50%">Phone No.</th>
-                  <th style="white-space: nowrap;">Action</th>
+                  <th style="width: 50%">الإيميل</th>
+                  <th style="width: 50%">رقم التليفون</th>
+                  <th style="white-space: nowrap;" class="text-center">الإجراء</th>
                 </tr>
               </thead>
               <tbody>

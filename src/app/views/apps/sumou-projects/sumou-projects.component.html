@@ -1,39 +1,39 @@
-<app-page-title title="Sumou" subTitle="Projects" />
+<app-page-title title="ممكلة العطاء" subTitle="المشروعات" />
 
 <section class="projects">
   <div class="form card p-3">
-
-
     <form class="row g-3" [formGroup]="projectForm">
-      <h3>Header Project</h3>
+      <h3>الصورة الرئيسية</h3>
       <div class="my-3">
-        <div>
-          <label class="form-label">Choose Main Image</label>
-          <input
-            type="file"
-            class="form-control"
-            accept="image/*"
-            (change)="handleMainImageSelect($event)" />
-        </div>
+        <dropzone
+          [config]="customDropzoneConfig"
+          (success)="onUploadSuccess($event)"
+          [message]="dropzoneMsg"
+          (init)="onDropzoneInit($event)"
+          class="dropzone"
+        >
+        </dropzone>
 
-        @if(mainImageData){
-          <div class="card mt-4 col-md-6 mx-auto">
-            <div class="position-relative">
-              <img [src]="mainImageData.previewUrl || mainImageData" alt="Main Image" class="card-img-top" style="height: 250px; object-fit: cover;" />
-              <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2 rounded-circle" (click)="clearMainImage()" title="إزالة">&times;</button>
+        <div class="row g-3" *ngIf="uploadedMainHeaderFiles.length > 0">
+          <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let file of uploadedMainHeaderFiles; let i = index" >
+            <div class="h-100 position-relative">
+              <img [src]="file.picture.dataURL" class="card-img-top object-fit-cover img-thumbnail" alt="{{ file.name }}" style="height: 150px; object-fit: cover; border-bottom: 1px solid #ddd;" />
+              <div class="remove-btn position-absolute cr bg-danger rounded-circle d-flex justify-content-center align-items-center" (click)="removeFile(i)">
+                <i class='bx bx-x text-white fs-4'></i>
+              </div>
             </div>
           </div>
-        }
+        </div>
       </div>
 
       <hr>
 
-      <h3>Project Info</h3>
+      <h3>بيانات المشروع</h3>
       <div class="col-12 position-relative input-container mt-3">
         <select selectFormInput class="form-control" data-choices name="choices-single-default" id="choices-single-default" formControlName="Type" >
-          <option value="" disabled>Choose Type</option>
-          <option value="1">Owner Ship Projects</option>
-          <option value="2">Real state Offers</option>
+          <option value="" disabled>اختر نوع المشروع</option>
+          <option value="1">مشاريع التمليك</option>
+          <option value="2">عروض عقارية</option>
         </select>
       </div>
 
@@ -41,7 +41,7 @@
         <input type="text" formControlName="Title" class="form-control input-field" name="Title" id="Title" placeholder=" ">
         <div class="icon-title d-flex justify-content-start align-items-center gap-1 w-100">
           <i class="ri-pages-line fs-24 button-sm-hover-icon"></i>
-          <span>Title</span>
+          <span>العنوان الرئيسي</span>
         </div>
       </div>
 
@@ -49,15 +49,15 @@
         <input type="number" formControlName="Price" class="form-control input-field" name="price" id="price" placeholder=" ">
         <div class="icon-price d-flex justify-content-start align-items-center gap-1 w-100">
           <i class="ri-money-dollar-circle-line fs-24 button-sm-hover-icon"></i>
-          <span>Price</span>
+          <span>السعر</span>
         </div>
       </div>
 
       <div class="col-md-6 col-12 position-relative input-container">
-        <input type="number" formControlName="Area" class="form-control input-field" name="area" id="area" placeholder=" ">
+        <input type="text" formControlName="Area" class="form-control input-field" name="area" id="area" placeholder=" ">
         <div class="icon-area d-flex justify-content-start align-items-center gap-1 w-100">
           <i class="ri-home-4-line fs-24 button-sm-hover-icon"></i>
-          <span>Area</span>
+          <span>المنطقة</span>
         </div>
       </div>
 
@@ -65,7 +65,7 @@
         <input type="text" formControlName="City" class="form-control input-field" name="city" id="city" placeholder=" ">
         <div class="icon-city d-flex justify-content-start align-items-center gap-1 w-100">
           <i class="ri-user-location-fill fs-24 button-sm-hover-icon"></i>
-          <span>City</span>
+          <span>المدينة</span>
         </div>
       </div>
 
@@ -73,7 +73,7 @@
         <input type="text" formControlName="Location" class="form-control input-field" name="location" id="location" placeholder=" ">
         <div class="icon-location d-flex justify-content-start align-items-center gap-1 w-100">
           <i class="ri-user-location-line fs-24 button-sm-hover-icon"></i>
-          <span>Location</span>
+          <span>الموقع</span>
         </div>
       </div>
 
@@ -81,7 +81,7 @@
         <input type="number" formControlName="RoomNumbers" class="form-control input-field" name="rooms" id="rooms" placeholder=" ">
         <div class="icon-rooms d-flex justify-content-start align-items-center gap-1 w-100">
           <i class="ri-numbers-line fs-24 button-sm-hover-icon"></i>
-          <span>Room Numbers</span>
+          <span>عدد الغرف</span>
         </div>
       </div>
 
@@ -89,45 +89,43 @@
         <textarea formControlName="Description" class="form-control input-field" name="description" id="description" placeholder=" "></textarea>
         <div class="icon-title d-flex justify-content-start align-items-center gap-1 w-100">
           <i class="ri-pages-line fs-24 button-sm-hover-icon"></i>
-          <span>Description</span>
+          <span>التفاصيل</span>
         </div>
       </div>
     </form>
 
     <div class="row my-3 g-3">
       <div class="col-12">
-        <label class="form-label">Choose Projects Image</label>
-        <input type="file" class="form-control" multiple (change)="onFileSelected($event)" />
-      </div>
-      @for (image of images; track $index) {
-        <div class="col-md-4 mb-4">
-          <div class="card h-100">
-            <div class="position-relative">
-              <img [src]="image.url || image.picture" alt="Title Picture" class="card-img-top" style="height: 200px; object-fit: cover;" />
-              <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle" (click)="removeImage($index, image.id) " title="حذف"> &times;</button>
-            </div>
+        <h3>صور المشروع</h3>
+        <div class="my-3">
+          <dropzone
+            [config]="customDropzoneConfig"
+            (success)="onUploadProjectSuccess($event)"
+            [message]="dropzoneMsg"
+            (init)="onDropzoneProjectInit($event)"
+            class="dropzone"
+          >
+          </dropzone>
 
-            <div class="card-body">
-              <div class="mb-2">
-                <label class="form-label">Title</label>
-                <input type="text" class="form-control" [(ngModel)]="image.title" placeholder="Title Picture" />
-              </div>
-
-              <div class="mb-0">
-                <label class="form-label">Description</label>
-                <textarea class="form-control" [(ngModel)]="image.description" placeholder="Description Picture"></textarea>
+          <div class="row g-3" *ngIf="uploadedProjectFiles.length > 0">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let file of uploadedProjectFiles; let i = index" >
+              <div class="h-100 position-relative">
+                <img [src]="file.picture.dataURL" class="card-img-top object-fit-cover img-thumbnail" alt="{{ file.name }}" style="height: 150px; object-fit: cover; border-bottom: 1px solid #ddd;" />
+                <div class="remove-btn position-absolute cr bg-danger rounded-circle d-flex justify-content-center align-items-center" (click)="removeProjectFile(i)">
+                  <i class='bx bx-x text-white fs-4'></i>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      }
+      </div>
     </div>
 
     <div class="d-flex flex-column justify-content-between align-items-center">
         @if(update){
-          <button class="btn btn-update" (click)="updateProject()">Update</button>
+          <button class="btn btn-update" (click)="updateProject()">تعديل</button>
         } @else {
-          <button class="btn btn-submit" (click)="submitProjectForm()">Submit</button>
+          <button class="btn btn-submit" (click)="submitProjectForm()">حفظ</button>
         }
     </div>
   </div>
@@ -140,24 +138,42 @@
           class="card-header d-flex justify-content-between align-items-center border-bottom"
         >
           <div>
-            <h4 class="card-title">All Projects</h4>
+            <h4 class="card-title">المشاريع</h4>
           </div>
-          <div ngbDropdown>
-            <a
-              ngbDropdownToggle
-              class="btn btn-sm btn-outline-light rounded"
-              role="button"
-            >
-              This Month
-            </a>
-            <div ngbDropdownMenu class="dropdown-menu-end">
-              <a href="javascript:void(0);" class="dropdown-item">Download</a>
+       <div ngbDropdown>
+  <a
+    ngbDropdownToggle
+    class="btn btn-sm btn-outline-light rounded"
+    role="button"
+  >
+    {{ selectedFilter }}
+  </a>
 
-              <a href="javascript:void(0);" class="dropdown-item">Export</a>
+  <div ngbDropdownMenu class="dropdown-menu-start text-end">
+    <a
+      href="javascript:void(0);"
+      class="dropdown-item"
+      (click)="onFilterChange('الكل')"
+    >
+      الكل
+    </a>
+    <a
+      href="javascript:void(0);"
+      class="dropdown-item"
+      (click)="onFilterChange('مشاريع التمليك')"
+    >
+      مشاريع التمليك
+    </a>
+    <a
+      href="javascript:void(0);"
+      class="dropdown-item"
+      (click)="onFilterChange('عروض عقارية')"
+    >
+      عروض عقارية
+    </a>
+  </div>
+</div>
 
-              <a href="javascript:void(0);" class="dropdown-item">Import</a>
-            </div>
-          </div>
         </div>
 
         <div class="card-body p-0">
@@ -165,14 +181,14 @@
             <table class="table align-middle text-nowrap table-hover table-centered mb-0">
               <thead class="bg-light-subtle">
                 <tr>
-                  <th>Main Image</th>
-                  <th>Title</th>
-                  <th>Description</th>
-                  <th>Area</th>
-                  <th>City</th>
-                  <th>Location</th>
-                  <th>Price</th>
-                  <th>Action</th>
+                  <th>الصور الرئيسية</th>
+                  <th>العنوان</th>
+                  <th>التفاصيل</th>
+                  <th>المنطقة</th>
+                  <th>المدينة</th>
+                  <th>الموقع</th>
+                  <th>السعر</th>
+                  <th>الإجراء</th>
                 </tr>
               </thead>
               <tbody>
@@ -189,7 +205,7 @@
                       />
                     </td>
                     <td>{{ item.title }}</td>
-                    <td>{{ item.description }}</td>
+                    <td [innerHTML]="item.description.split('.').slice(0, 1).join(' ')"></td>
                     <td>{{ item.area }}</td>
                     <td>{{ item.city }}</td>
                     <td>{{ item.location }}</td>
@@ -259,36 +275,36 @@
     </div>
     <div class="modal-body">
       <div class="table-responsive">
-        <table class="table align-middle text-nowrap table-hover table-centered mb-0">
+        <table class="table text-nowrap table-hover mb-0">
           <thead class="bg-light-subtle">
             <tr>
-              <th>Main Image</th>
-              <th>Title</th>
-              <th>Description</th>
-              <th>Area</th>
-              <th>City</th>
-              <th>Location</th>
-              <th>Price</th>
+              <th>الصور الرئيسية</th>
+              <th>العنوان</th>
+              <th>التفاصيل</th>
+              <th>المنطقة</th>
+              <th>المدينة</th>
+              <th>الموقع</th>
+              <th>السعر</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-                <td>
-                  <img
-                    [src]="selectedProjectById?.mainPicture"
-                    alt="Project Image"
-                    width="60"
-                    height="60"
-                    class="rounded"
-                    style="object-fit: cover"
-                  />
-                </td>
-                <td>{{ selectedProjectById?.title }}</td>
-                <td>{{ selectedProjectById?.description }}</td>
-                <td>{{ selectedProjectById?.area }}</td>
-                <td>{{ selectedProjectById?.city }}</td>
-                <td>{{ selectedProjectById?.location }}</td>
-                <td>{{ selectedProjectById?.price }}</td>
+              <td>
+                <img
+                  [src]="firstMainPic"
+                  [alt]="selectedProjectById?.title"
+                  width="60"
+                  height="60"
+                  class="rounded"
+                  style="object-fit: cover"
+                />
+              </td>
+              <td>{{ selectedProjectById?.title }}</td>
+              <td [innerHTML]='selectedProjectById?.description! | newLine'></td>
+              <td>{{ selectedProjectById?.area }}</td>
+              <td>{{ selectedProjectById?.city }}</td>
+              <td>{{ selectedProjectById?.location }}</td>
+              <td>{{ selectedProjectById?.price }}</td>
             </tr>
           </tbody>
         </table>
@@ -298,9 +314,7 @@
         @for (project of selectedProjectById?.projectDetails; track $index) {
           <div class="col-md-3 col-12">
             <div class="card p-2 h-100">
-              <img [src]="project.picture" class="img-details" [alt]="project.title">
-              <h4 class="mt-2">{{project.title}}</h4>
-              <p class="m-0">{{project.description}}</p>
+              <img [src]="project.picture" class="img-details" [alt]="selectedProjectById?.title">
             </div>
           </div>
         }

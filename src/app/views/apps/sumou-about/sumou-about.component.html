@@ -1,21 +1,21 @@
-<app-page-title title="Sumou" subTitle="About Us" />
+<app-page-title title="ممكلة العطاء" subTitle="من نحن" />
 
-<section class="about-sumout">
+<section class="about-sumou">
   <div class="form card p-3">
     <form class="row g-3">
       <div class="col-12 position-relative input-container">
         <textarea [(ngModel)]="description" class="form-control input-field" name="description" id="description" placeholder=" "></textarea>
         <div class="icon-description d-flex justify-content-start align-items-center gap-1 w-100">
           <i class="ri-pages-line fs-24 button-sm-hover-icon"></i>
-          <span>Description</span>
+          <span>التفاصيل</span>
         </div>
       </div>
 
       <div class="d-flex flex-column justify-content-between align-items-center">
         @if(update){
-          <button class="btn btn-update" (click)="updateAboutDescrition()">Update</button>
+          <button class="btn btn-update" (click)="updateAboutDescrition()">تعديل</button>
         } @else {
-          <button class="btn btn-submit" (click)="submitAbout()">Submit</button>
+          <button class="btn btn-submit" (click)="submitAbout()">حفظ</button>
         }
       </div>
     </form>
@@ -29,9 +29,9 @@
           class="card-header d-flex justify-content-between align-items-center border-bottom"
         >
           <div>
-            <h4 class="card-title">All Projects</h4>
+            <h4 class="card-title">جميع التفاصيل</h4>
           </div>
-          <div ngbDropdown>
+          <!-- <div ngbDropdown>
             <a
               ngbDropdownToggle
               class="btn btn-sm btn-outline-light rounded"
@@ -46,7 +46,7 @@
 
               <a href="javascript:void(0);" class="dropdown-item">Import</a>
             </div>
-          </div>
+          </div> -->
         </div>
 
         <div class="card-body p-0">
@@ -54,8 +54,8 @@
             <table class="table align-middle text-nowrap table-hover table-centered mb-0">
               <thead class="bg-light-subtle">
                 <tr>
-                  <th style="width: 100%">Description</th>
-                  <th style="white-space: nowrap;">Action</th>
+                  <th style="width: 100%">التفاصيل</th>
+                  <th class="text-center" style="white-space: nowrap;">الإجراء</th>
                 </tr>
               </thead>
               <tbody>

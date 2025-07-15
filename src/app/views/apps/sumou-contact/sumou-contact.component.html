@@ -1,13 +1,13 @@
-<app-page-title title="Sumou" subTitle="Contact Us" />
+<app-page-title title="مملكة العطاء" subTitle="تواصل معنا" />
 
-<section class="about-sumout">
+<section class="contact-sumou">
   <div class="form card p-3">
     <form class="row g-3" [formGroup]="contactForm">
       <div class="col-md-6 col-12 position-relative input-container">
         <input type="tel" formControlName="phone1" class="form-control input-field" name="phone1" id="phone1" placeholder=" ">
         <div class="icon-title d-flex justify-content-start align-items-center gap-1 w-100">
             <i class="ri-phone-line fs-24 button-sm-hover-icon"></i>
-          <span>Phone No1.</span>
+          <span>التليفون 1</span>
         </div>
       </div>
 
@@ -15,7 +15,7 @@
         <input type="tel" formControlName="phone2" class="form-control input-field" name="phone2" id="phone2" placeholder=" ">
         <div class="icon-title d-flex justify-content-start align-items-center gap-1 w-100">
             <i class="ri-phone-line fs-24 button-sm-hover-icon"></i>
-            <span>Phone No2.</span>
+            <span>التليفون 2</span>
         </div>
       </div>
 
@@ -23,7 +23,7 @@
         <input type="text" formControlName="facebookUrl" class="form-control input-field" name="facebookUrl" id="facebookUrl" placeholder=" ">
         <div class="icon-title d-flex justify-content-start align-items-center gap-1 w-100">
           <i class="ri-facebook-box-line fs-24 button-sm-hover-icon"></i>
-          <span>Facebook Url</span>
+          <span>رابط الفيسبوك</span>
         </div>
       </div>
 
@@ -31,7 +31,7 @@
         <input type="text" formControlName="twitterUrl" class="form-control input-field" name="twitterUrl" id="twitterUrl" placeholder=" ">
         <div class="icon-title d-flex justify-content-start align-items-center gap-1 w-100">
           <i class="ri-twitter-line fs-24 button-sm-hover-icon"></i>
-          <span>Twitter Url</span>
+          <span>رابط تويتر</span>
         </div>
       </div>
 
@@ -39,7 +39,7 @@
         <input type="text" formControlName="linkedInUrl" class="form-control input-field" name="linkedInUrl" id="linkedInUrl" placeholder=" ">
         <div class="icon-title d-flex justify-content-start align-items-center gap-1 w-100">
           <i class="ri-linkedin-box-line fs-24 button-sm-hover-icon"></i>
-          <span>LinkedIn Url</span>
+          <span>رابط لينكدان</span>
         </div>
       </div>
 
@@ -47,7 +47,7 @@
         <input type="text" formControlName="instagramUrl" class="form-control input-field" name="instagramUrl" id="instagramUrl" placeholder=" ">
         <div class="icon-title d-flex justify-content-start align-items-center gap-1 w-100">
           <i class="ri-instagram-line fs-24 button-sm-hover-icon"></i>
-          <span>Instagram Url</span>
+          <span>رابط الانستجرام</span>
         </div>
       </div>
 
@@ -55,15 +55,15 @@
         <textarea formControlName="address" class="form-control input-field" name="address" id="address" placeholder=" "></textarea>
         <div class="icon-title d-flex justify-content-start align-items-center gap-1 w-100">
           <i class="ri-pages-line fs-24 button-sm-hover-icon"></i>
-          <span>Address</span>
+          <span>العنوان</span>
         </div>
       </div>
 
       <div class="d-flex flex-column justify-content-between align-items-center">
         @if(update){
-          <button class="btn btn-update" (click)="UpdateContact()">Update</button>
+          <button class="btn btn-update" (click)="UpdateContact()">تعديل</button>
         } @else {
-          <button class="btn btn-submit" (click)="submitContactForm()">Submit</button>
+          <button class="btn btn-submit" (click)="submitContactForm()">حفظ</button>
         }
       </div>
     </form>
@@ -77,9 +77,9 @@
           class="card-header d-flex justify-content-between align-items-center border-bottom"
         >
           <div>
-            <h4 class="card-title">All Contacts</h4>
+            <h4 class="card-title">التواصلٍ</h4>
           </div>
-          <div ngbDropdown>
+          <!-- <div ngbDropdown>
             <a
               ngbDropdownToggle
               class="btn btn-sm btn-outline-light rounded"
@@ -94,7 +94,7 @@
 
               <a href="javascript:void(0);" class="dropdown-item">Import</a>
             </div>
-          </div>
+          </div> -->
         </div>
 
         <div class="card-body p-0">
@@ -102,14 +102,14 @@
             <table class="table align-middle text-nowrap table-hover table-centered mb-0">
               <thead class="bg-light-subtle">
                 <tr>
-                  <th>Phone No1.</th>
-                  <th>Phone No2.</th>
-                  <th>Address</th>
-                  <th>Facebook</th>
-                  <th>Twitter</th>
-                  <th>LinkedIn</th>
-                  <th>Instagram</th>
-                  <th style="white-space: nowrap;">Action</th>
+                  <th>التليفون 1</th>
+                  <th>التليفون 2</th>
+                  <th>العنوان</th>
+                  <th>رابط الفيسبوك</th>
+                  <th>رابط تويتر</th>
+                  <th>رابط لينكدان</th>
+                  <th>رابط الانستجرام</th>
+                  <th style="white-space: nowrap;" class="text-center">الإجراء</th>
                 </tr>
               </thead>
               <tbody>
@@ -154,8 +154,8 @@
               [pageSize]="pageSize"
               class="pagination justify-content-end mb-0"
             >
-              <ng-template ngbPaginationPrevious>Previous</ng-template>
-              <ng-template ngbPaginationNext>Next</ng-template>
+              <ng-template ngbPaginationPrevious>السابق</ng-template>
+              <ng-template ngbPaginationNext>التالي</ng-template>
             </ngb-pagination>
           </nav>
         </div>

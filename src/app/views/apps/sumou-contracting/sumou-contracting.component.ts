@@ -1,10 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PageTitleComponent } from '@component/page-title.component';
 import { ContractingService } from '@core/services/contracting/contracting.service';
 import { NgbDropdownModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { DROPZONE_CONFIG, DropzoneConfigInterface, DropzoneModule } from 'ngx-dropzone-wrapper';
 import Swal from 'sweetalert2';
+
+const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
+ // Change this to your upload POST address:
+  url: 'https://httpbin.org/post',
+  maxFilesize: 50,
+  acceptedFiles: 'image/*'
+};
 
 @Component({
   selector: 'app-sumou-contracting',
@@ -16,10 +24,17 @@ import Swal from 'sweetalert2';
     NgbPaginationModule,
     CommonModule,
     ReactiveFormsModule,
+    DropzoneModule
   ],
   templateUrl: './sumou-contracting.component.html',
   styleUrl: './sumou-contracting.component.scss',
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  providers: [
+    {
+      provide: DROPZONE_CONFIG,
+      useValue: DEFAULT_DROPZONE_CONFIG
+    }
+  ]
 })
 export class SumouContractingComponent {
   private readonly _ContractingService = inject(ContractingService)
@@ -42,6 +57,48 @@ export class SumouContractingComponent {
         this.totalItems = this.allContracting.length
       }
     })
+  }
+
+    // Main Header Images
+  uploadedMainHeaderFiles: any[] = []
+  imageURL: string = ''
+  dropzoneRef: any = null;
+  dropzoneMsg = ` <div class="dz-message needsclick">
+                      <i class="ri-upload-cloud-2-line fs-48 text-success"></i>
+                      <h3>أسقط صورك هنا أو <span class="text-success">انقر للتصفح</span></h3>
+                      <span class="text-muted fs-13">
+                          يُفضل استخدام أبعاد 1600 × 1200 (4:3). الملفات المسموح بها: PNG، JPG، وGIF
+                      </span>
+                  </div>
+              `
+  customDropzoneConfig: DropzoneConfigInterface = {
+    url: 'https://httpbin.org/post',
+    maxFilesize: 10,
+    maxFiles: 1,
+    acceptedFiles: 'image/*',
+    dictDefaultMessage: ''
+  };
+
+  // Upload Files
+  onUploadSuccess(event: any): void {
+    console.log('Success:', event[0]);
+    this.uploadedMainHeaderFiles.push(event[0])
+  }
+
+  // File Remove
+  onDropzoneInit(dropzone: any): void {
+    this.dropzoneRef = dropzone;
+  }
+
+  removeFile(index: number) {
+    const removedFile = this.uploadedMainHeaderFiles[index];
+    this.uploadedMainHeaderFiles.splice(index, 1);
+    if (this.dropzoneRef) {
+      const dzFile = this.dropzoneRef.files.find((f: any) => f.name === removedFile.name);
+      if (dzFile) {
+        this.dropzoneRef.removeFile(dzFile);
+      }
+    }
   }
 
   // Contracting Image

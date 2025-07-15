@@ -19,7 +19,7 @@ import { getSidebarsize } from '@store/layout/layout-selector'
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [SidebarComponent, TopbarComponent, FooterComponent, RouterModule],
+  imports: [SidebarComponent, TopbarComponent, FooterComponent, RouterModule, RightSidebarComponent],
   templateUrl: './main-layout.component.html',
   styles: ``,
 })

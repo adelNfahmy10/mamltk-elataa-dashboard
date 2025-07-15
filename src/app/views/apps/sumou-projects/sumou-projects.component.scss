@@ -1,4 +1,7 @@
 $mainColor:#036F62;
+.projects{
+  direction: rtl;
+}
 .img-table{
   width: 60px;
 }
@@ -6,4 +9,11 @@ $mainColor:#036F62;
   height: 200px;
   width: 100%;
   object-fit: cover;
+}
+.cr{
+  cursor: pointer;
+}
+.remove-btn{
+  top: 10px;
+  right: 5px;
 }

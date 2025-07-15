@@ -1,18 +1,41 @@
-<app-page-title title="Sumou" subTitle="Contracting" />
+<app-page-title title="مملكة العطاء" subTitle="المقاولات" />
 
-<section class="about-sumout">
+<section class="contract-sumou">
   <div class="form card p-3">
     <form class="row g-3">
       <div class="col-12">
         <div class="my-3">
           <div>
-            <label class="form-label">Choose Contracting Image</label>
-            <input
+            <label class="form-label">اختر صورة للمقاولات</label>
+             <dropzone
+                [config]="customDropzoneConfig"
+                (success)="onUploadSuccess($event)"
+                [message]="dropzoneMsg"
+                (init)="onDropzoneInit($event)"
+                class="dropzone"
+              >
+              </dropzone>
+            <!-- <input
               type="file"
               class="form-control"
               accept="image/*"
-              (change)="handleMainImageSelect($event)" />
+              (change)="handleMainImageSelect($event)" /> -->
           </div>
+
+          <div class="my-3">
+
+
+        <div class="row g-3" *ngIf="uploadedMainHeaderFiles.length > 0">
+          <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let file of uploadedMainHeaderFiles; let i = index" >
+            <div class="h-100 position-relative">
+              <img [src]="file.dataURL" class="card-img-top object-fit-cover img-thumbnail" alt="{{ file.name }}" style="height: 150px; object-fit: cover; border-bottom: 1px solid #ddd;" />
+              <div class="remove-btn position-absolute cr bg-danger rounded-circle d-flex justify-content-center align-items-center" (click)="removeFile(i)">
+                <i class='bx bx-x text-white fs-4'></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
           @if(mainImageData){
             <div class="card mt-4 col-md-6 mx-auto">
@@ -28,15 +51,15 @@
         <textarea [(ngModel)]="description" class="form-control input-field" name="description" id="description" placeholder=" "></textarea>
         <div class="icon-description d-flex justify-content-start align-items-center gap-1 w-100">
           <i class="ri-pages-line fs-24 button-sm-hover-icon"></i>
-          <span>Description</span>
+          <span>التفاصيل</span>
         </div>
       </div>
 
       <div class="d-flex flex-column justify-content-between align-items-center">
         @if(update){
-          <button class="btn btn-update" (click)="UpdateContracting()">Update</button>
+          <button class="btn btn-update" (click)="UpdateContracting()">تعديل</button>
         } @else {
-          <button class="btn btn-submit" (click)="submitContractingData()">Submit</button>
+          <button class="btn btn-submit" (click)="submitContractingData()">حفظ</button>
         }
       </div>
     </form>
@@ -50,9 +73,9 @@
           class="card-header d-flex justify-content-between align-items-center border-bottom"
         >
           <div>
-            <h4 class="card-title">All Contracting</h4>
+            <h4 class="card-title">المقاولات</h4>
           </div>
-          <div ngbDropdown>
+          <!-- <div ngbDropdown>
             <a
               ngbDropdownToggle
               class="btn btn-sm btn-outline-light rounded"
@@ -67,7 +90,7 @@
 
               <a href="javascript:void(0);" class="dropdown-item">Import</a>
             </div>
-          </div>
+          </div> -->
         </div>
 
         <div class="card-body p-0">
@@ -75,9 +98,9 @@
             <table class="table align-middle text-nowrap table-hover table-centered mb-0">
               <thead class="bg-light-subtle">
                 <tr>
-                  <th style="width: 25%">Image</th>
-                  <th style="width: 75%">Description</th>
-                  <th style="white-space: nowrap;">Action</th>
+                  <th style="width: 25%">الصورة</th>
+                  <th style="width: 75%">التفاصيل</th>
+                  <th style="white-space: nowrap;" class="text-center">الإجراء</th>
                 </tr>
               </thead>
               <tbody>
