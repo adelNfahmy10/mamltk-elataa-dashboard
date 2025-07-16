@@ -4,11 +4,18 @@
   <div class="form card p-3">
     <form class="row g-3">
       <div class="col-12 position-relative input-container">
-        <textarea [(ngModel)]="description" class="form-control input-field" name="description" id="description" placeholder=" "></textarea>
-        <div class="icon-description d-flex justify-content-start align-items-center gap-1 w-100">
+        <div class="d-flex justify-content-start align-items-center gap-1 w-100">
           <i class="ri-pages-line fs-24 button-sm-hover-icon"></i>
           <span>التفاصيل</span>
         </div>
+        <quill-editor
+          #quillEditor
+          [(ngModel)]="content"
+          theme="snow"
+          [modules]="editorConfig"
+          style="height: 300px"
+          class="w-100"
+        ></quill-editor>
       </div>
       <div class="col-12">
         <div>

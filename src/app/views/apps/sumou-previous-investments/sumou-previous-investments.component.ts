@@ -6,7 +6,8 @@ import { NgbDropdownModule, NgbModal, NgbModalOptions, NgbPaginationModule } fro
 import Swal from 'sweetalert2';
 import { PageTitleComponent } from "@component/page-title.component";
 import { DROPZONE_CONFIG, DropzoneConfigInterface, DropzoneModule } from "ngx-dropzone-wrapper";
-import { ContractingService } from '@core/services/contracting/contracting.service';
+import Editor from 'quill/core/editor';
+import { QuillEditorComponent } from "ngx-quill";
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
  // Change this to your upload POST address:
@@ -19,14 +20,15 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
   selector: 'app-sumou-previous-investments',
   standalone: true,
   imports: [
-      PageTitleComponent,
-      FormsModule,
-      NgbDropdownModule,
-      NgbPaginationModule,
-      CommonModule,
-      ReactiveFormsModule,
-      DropzoneModule
-  ],
+    PageTitleComponent,
+    FormsModule,
+    NgbDropdownModule,
+    NgbPaginationModule,
+    CommonModule,
+    ReactiveFormsModule,
+    DropzoneModule,
+    QuillEditorComponent
+],
   templateUrl: './sumou-previous-investments.component.html',
   styleUrl: './sumou-previous-investments.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -39,14 +41,13 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
 })
 export class SumouPreviousInvestmentsComponent {
   private readonly _PreviousInvestmentsService = inject(PreviousInvestmentsService)
+  private modalService = inject(NgbModal)
 
   allPreviousInvestments:any[] = []
   description:string = ''
   previousInvestmentId:any= null
   InvestmentsData!:any
   update:boolean = false
-  private modalService = inject(NgbModal)
-
 
   ngOnInit(): void {
     this.GetAllPreviousInvestments()
@@ -226,5 +227,59 @@ export class SumouPreviousInvestmentsComponent {
     const start = (this.currentPage - 1) * this.pageSize;
     const end = start + this.pageSize;
     return this.allPreviousInvestments.slice(start, end);
+  }
+
+  editor!: Editor
+
+  content: string = ` <div id="snow-editor" style="height: 300px">
+<h3>
+    <span class="ql-size-large">Hello World!</span>
+</h3>
+<p><br /></p>
+<h3>
+    This is a simple editable area.
+</h3>
+<p><br /></p>
+<ul>
+    <li>
+        Select a text to reveal the
+        toolbar.
+    </li>
+    <li>
+        Edit rich document
+        on-the-fly, so elastic!
+    </li>
+</ul>
+<p><br /></p>
+<p>End of simple area</p>
+</div>`
+
+  public model = {
+    editorData: this.content,
+  }
+
+  editorConfig = {
+    toolbar: [
+      [{ font: [] }, { size: ['small', false, 'large', 'huge'] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ color: [] }, { background: [] }],
+      [{ script: 'sub' }, { script: 'super' }],
+      [{ header: [1, 2, 3, 4, 5, 6, false] }],
+      ['blockquote', 'code-block'],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      [{ indent: '-1' }, { indent: '+1' }],
+      [{ direction: 'rtl' }],
+      [{ align: [] }],
+
+      ['link', 'image', 'video'],
+      ['clean'],
+    ],
+  }
+
+  editorConfigBubble = {
+    toolbar: [
+      ['bold', 'italic', 'link', 'blockquote'],
+      [{ header: 1 }, { header: 2 }],
+    ],
   }
 }

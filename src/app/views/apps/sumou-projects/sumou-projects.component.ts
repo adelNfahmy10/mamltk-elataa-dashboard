@@ -9,6 +9,8 @@ import { IProject } from './dat';
 import Swal from 'sweetalert2';
 import { DropzoneModule,DROPZONE_CONFIG,DropzoneConfigInterface} from 'ngx-dropzone-wrapper';
 import { NewLinePipe } from '@core/pips/newLine/new-line.pipe';
+import Editor from 'quill/core/editor';
+import { QuillEditorComponent } from "ngx-quill";
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
  // Change this to your upload POST address:
@@ -30,8 +32,9 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     ReactiveFormsModule,
     SelectFormInputDirective,
     DropzoneModule,
-    NewLinePipe
-  ],
+    NewLinePipe,
+    QuillEditorComponent
+],
   templateUrl: './sumou-projects.component.html',
   styleUrl: './sumou-projects.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -346,4 +349,36 @@ export class SumouProjectsComponent implements OnInit{
     }
   }
 
+  editor!: Editor
+
+  content: string = `أدخل التفاصيل الخاصة بالمشروع`
+
+  public model = {
+    editorData: this.content,
+  }
+
+  editorConfig = {
+    toolbar: [
+      [{ font: [] }, { size: ['small', false, 'large', 'huge'] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ color: [] }, { background: [] }],
+      [{ script: 'sub' }, { script: 'super' }],
+      [{ header: [1, 2, 3, 4, 5, 6, false] }],
+      ['blockquote', 'code-block'],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      [{ indent: '-1' }, { indent: '+1' }],
+      [{ direction: 'rtl' }],
+      [{ align: [] }],
+
+      ['link', 'image', 'video'],
+      ['clean'],
+    ],
+  }
+
+  editorConfigBubble = {
+    toolbar: [
+      ['bold', 'italic', 'link', 'blockquote'],
+      [{ header: 1 }, { header: 2 }],
+    ],
+  }
 }
