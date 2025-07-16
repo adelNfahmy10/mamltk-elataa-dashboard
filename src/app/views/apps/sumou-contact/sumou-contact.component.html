@@ -62,7 +62,7 @@
       <div class="d-flex flex-column justify-content-between align-items-center">
         @if(update){
           <button class="btn btn-update" (click)="UpdateContact()">تعديل</button>
-        } @else {
+        } @else if(allContact.length == 0){
           <button class="btn btn-submit" (click)="submitContactForm()">حفظ</button>
         }
       </div>
@@ -73,28 +73,10 @@
    <div class="row">
     <div class="col-xl-12">
       <div class="card">
-        <div
-          class="card-header d-flex justify-content-between align-items-center border-bottom"
-        >
+        <div class="card-header d-flex justify-content-between align-items-center border-bottom" >
           <div>
             <h4 class="card-title">التواصلٍ</h4>
           </div>
-          <!-- <div ngbDropdown>
-            <a
-              ngbDropdownToggle
-              class="btn btn-sm btn-outline-light rounded"
-              role="button"
-            >
-              This Month
-            </a>
-            <div ngbDropdownMenu class="dropdown-menu-end">
-              <a href="javascript:void(0);" class="dropdown-item">Download</a>
-
-              <a href="javascript:void(0);" class="dropdown-item">Export</a>
-
-              <a href="javascript:void(0);" class="dropdown-item">Import</a>
-            </div>
-          </div> -->
         </div>
 
         <div class="card-body p-0">
@@ -146,7 +128,7 @@
           </div>
         </div>
 
-        <div class="card-footer border-top">
+        <!-- <div class="card-footer border-top">
           <nav aria-label="Page navigation example">
             <ngb-pagination
               [collectionSize]="totalItems"
@@ -158,7 +140,7 @@
               <ng-template ngbPaginationNext>التالي</ng-template>
             </ngb-pagination>
           </nav>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
