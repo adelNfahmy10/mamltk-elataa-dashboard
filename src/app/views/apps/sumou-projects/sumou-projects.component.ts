@@ -237,28 +237,53 @@ export class SumouProjectsComponent implements OnInit{
     })
   }
 
-  patchProjectData(project:any):void{
-    this.projectId = project.id
-    this._ProjectsService.getPorjectById(this.projectId).subscribe({
-      next:(res)=>{
-        this.projectForm.patchValue({
-          Title: res.data.title,
-          Description: res.data.description,
-          Price: res.data.price,
-          Location: res.data.location,
-          City: res.data.city,
-          RoomNumbers: res.data.roomNumbers,
-          Area: res.data.area,
-          Type: res.data.type
-        })
-      }
-    })
+  patchProjectData(project: any): void {
+  this.projectId = project.id;
+  this.update = true;
+
+  this._ProjectsService.getPorjectById(this.projectId).subscribe({
+    next: (res) => {
+      const data = res.data;
+
+      // Patch القيم داخل الفورم
+      this.projectForm.patchValue({
+        Title: data.title,
+        Description: data.description,
+        Price: data.price,
+        Location: data.location,
+        City: data.city,
+        RoomNumbers: data.roomNumbers,
+        Area: data.area,
+        Type: data.type
+      });
+
+      this.uploadedMainHeaderFiles = data.projectDetails
+      .filter((item: any) => item.type === 1)
+      .map((item: any) => ({
+        id: item.id,
+        type: 1,
+        picture: item.picture
+      }));
+
+      this.uploadedProjectFiles = data.projectDetails
+        .filter((item: any) => item.type === 2)
+        .map((item: any) => ({
+          id: item.id,
+          type: 2,
+          picture: item.picture
+        }));
+    }
+  });
   }
+
 
   updateProject():void{
     let data = this.projectForm.value
-    data.MainPicture = this.uploadedMainHeaderFiles
-    data.Objects = this.uploadedProjectFiles
+    data.Id = this.projectId
+    data.Objects = [...this.uploadedProjectFiles, ...this.uploadedMainHeaderFiles]
+
+    console.log(data.Objects);
+
 
     const formData = new FormData();
     formData.append('Id', this.projectId);
@@ -270,22 +295,21 @@ export class SumouProjectsComponent implements OnInit{
     formData.append('RoomNumbers', data.RoomNumbers);
     formData.append('Area', data.Area);
     formData.append('Type', data.Type);
-    data.MainPicture.forEach((img:any, index:any) => {
-      formData.append(`MainPicture[${index}]`, img.file);
-    });
     data.Objects.forEach((img:any, index:any) => {
-      formData.append(`Objects[${index}].picture`, img.file);
-      formData.append(`Objects[${index}].title`, img.title);
-      formData.append(`Objects[${index}].description`, img.description);
+      formData.append(`Objects[${index}].id`, img.id);
+      formData.append(`Objects[${index}].type`, img.type);
+      formData.append(`Objects[${index}].picture`, img.picture);
     });
 
 
     this._ProjectsService.UpdateProject(formData).subscribe({
       next:(res)=>{
         this.getAllProjects()
+        this.projectForm.reset()
+        this.uploadedMainHeaderFiles = []
         this.uploadedProjectFiles = []
-        this.uploadedProjectFiles = []
-        this.update = false
+        this.dropzoneRef.removeAllFiles();
+        this.dropzoneProjectRef.removeAllFiles();
         Swal.fire({
           title: 'Good job!',
           text: 'Update Project Is Successed!',

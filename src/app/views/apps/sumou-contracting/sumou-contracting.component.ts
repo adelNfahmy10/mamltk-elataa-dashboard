@@ -39,7 +39,6 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
 export class SumouContractingComponent {
   private readonly _ContractingService = inject(ContractingService)
 
-  mainImageData: { file: File; previewUrl: string | null } | null = null;
   allContracting:any[] = []
   description:string = ''
   contractingId:any= null
@@ -59,7 +58,7 @@ export class SumouContractingComponent {
     })
   }
 
-    // Main Header Images
+  // Main Header Images
   uploadedMainHeaderFiles: any[] = []
   imageURL: string = ''
   dropzoneRef: any = null;
@@ -90,52 +89,32 @@ export class SumouContractingComponent {
     this.dropzoneRef = dropzone;
   }
 
-  removeFile(index: number) {
-    const removedFile = this.uploadedMainHeaderFiles[index];
-    this.uploadedMainHeaderFiles.splice(index, 1);
-    if (this.dropzoneRef) {
-      const dzFile = this.dropzoneRef.files.find((f: any) => f.name === removedFile.name);
-      if (dzFile) {
-        this.dropzoneRef.removeFile(dzFile);
-      }
+  removeFile() {
+    this.uploadedMainHeaderFiles = []
+    if (this.dropzoneRef && this.dropzoneRef.files.length > 0) {
+      const dzFile = this.dropzoneRef.files[0];
+      this.dropzoneRef.removeFile(dzFile);
     }
-  }
-
-  // Contracting Image
-  handleMainImageSelect(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      const selected = input.files[0];
-
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.mainImageData = {
-          file: selected,
-          previewUrl: e.target.result
-        };
-      };
-
-      reader.readAsDataURL(selected);
-      input.value = '';
-    }
-  }
-  clearMainImage(): void {
-    this.mainImageData = null;
   }
 
   // Submit Form Contracting
   submitContractingData():void{
-    let formData = new FormData
-    formData.append('Description', this.description)
-    if (this.mainImageData) {
-      formData.append('File', this.mainImageData?.file);
+    let data = {
+      Description: this.description,
+      File: this.uploadedMainHeaderFiles[0],
     }
+
+    let formData = new FormData
+    formData.append('Description', data.Description)
+    formData.append('File', data.File)
+
 
     this._ContractingService.CreateContracting(formData).subscribe({
       next:(res)=>{
-        this.GetAllContracting()
-        this.description = ''
-        this.mainImageData = null
+        this.GetAllContracting();
+        this.description = '';
+        this.uploadedMainHeaderFiles = [];
+        this.dropzoneRef.removeAllFiles();
         Swal.fire({
           title: 'Good job!',
           text: 'Create Contracting Is Success!',
@@ -166,28 +145,40 @@ export class SumouContractingComponent {
   }
 
   // Patch Data Contracting
-  patchContractingData(contracting:any):void{
-    this.contractingId = contracting.id
+  patchContractingData(contracting: any): void {
+    this.contractingId = contracting.id;
+
     this._ContractingService.GetContractingById(this.contractingId).subscribe({
-      next:(res)=>{
-        this.description = res.data.description,
-        this.mainImageData = res.data.fileUrl
-        this.update = true
+      next: (res) => {
+        const data = res.data;
+        this.description = data.description;
+        this.uploadedMainHeaderFiles[0] = data.fileUrl
+        this.update = true;
       }
-    })
+    });
   }
 
   // Update Contracting
   UpdateContracting():void{
+    let data = {
+      Id : this.contractingId,
+      Description : this.description,
+      File : this.uploadedMainHeaderFiles[0]
+    }
+
+    console.log(data);
+
     let formData = new FormData
     formData.append('Id', this.contractingId)
     formData.append('Description', this.description)
-    if (this.mainImageData) {
-      formData.append('File', this.mainImageData?.file);
-    }
+    formData.append('File', this.uploadedMainHeaderFiles[0])
 
     this._ContractingService.UpdateContracting(formData).subscribe({
       next:(res)=>{
+        this.GetAllContracting();
+        this.description = '';
+        this.uploadedMainHeaderFiles = [];
+        this.dropzoneRef.removeAllFiles();
         Swal.fire({
           title: 'Good job!',
           text: 'Update Contracting Is Success!',
@@ -196,11 +187,6 @@ export class SumouContractingComponent {
             confirmButton: 'btn btn-primary w-xs me-2 mt-2',
           },
         })
-        this.description = ''
-        this.mainImageData = null
-        this.contractingId = null
-        this.update = false
-        this.GetAllContracting()
       }
     })
   }
