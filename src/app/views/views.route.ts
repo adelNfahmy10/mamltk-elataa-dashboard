@@ -10,6 +10,7 @@ import { SumouAboutComponent } from './apps/sumou-about/sumou-about.component'
 import { SumouContractingComponent } from './apps/sumou-contracting/sumou-contracting.component'
 import { SumouConfigurationComponent } from './apps/sumou-configuration/sumou-configuration.component'
 import { SumouContactComponent } from './apps/sumou-contact/sumou-contact.component'
+import { SumouPreviousInvestmentsComponent } from './apps/sumou-previous-investments/sumou-previous-investments.component'
 
 export const VIEWS_ROUTES: Route[] = [
   {
@@ -38,6 +39,11 @@ export const VIEWS_ROUTES: Route[] = [
     path: 'projects',
     component: SumouProjectsComponent,
     data: { title: 'Projects' },
+  },
+  {
+    path: 'previous-projects',
+    component: SumouPreviousInvestmentsComponent,
+    data: { title: 'Previous Investments' },
   },
   {
     path: 'about',

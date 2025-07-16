@@ -163,6 +163,12 @@ export const MENU_ITEMS: MenuItemType[] = [
     url: '/projects',
   },
   {
+    key: 'previous-projects',
+    label: 'مشاريعنا السابقة',
+    icon: 'ri-building-2-line',
+    url: '/previous-projects',
+  },
+  {
     key: 'about',
     label: 'من نحن',
     icon: 'ri-building-2-line',

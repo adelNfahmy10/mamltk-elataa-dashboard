@@ -97,7 +97,6 @@ export class SumouProjectsComponent implements OnInit{
     })
   }
 
-
   // Main Header Images
   uploadedMainHeaderFiles: any[] = []
   dropzoneRef: any = null;
