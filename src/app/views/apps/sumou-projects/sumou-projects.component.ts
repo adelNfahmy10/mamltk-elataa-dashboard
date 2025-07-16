@@ -238,42 +238,42 @@ export class SumouProjectsComponent implements OnInit{
   }
 
   patchProjectData(project: any): void {
-  this.projectId = project.id;
-  this.update = true;
+    this.projectId = project.id;
 
-  this._ProjectsService.getPorjectById(this.projectId).subscribe({
-    next: (res) => {
-      const data = res.data;
+    this._ProjectsService.getPorjectById(this.projectId).subscribe({
+      next: (res) => {
+        const data = res.data;
+        this.update = true;
 
-      // Patch القيم داخل الفورم
-      this.projectForm.patchValue({
-        Title: data.title,
-        Description: data.description,
-        Price: data.price,
-        Location: data.location,
-        City: data.city,
-        RoomNumbers: data.roomNumbers,
-        Area: data.area,
-        Type: data.type
-      });
+        // Patch القيم داخل الفورم
+        this.projectForm.patchValue({
+          Title: data.title,
+          Description: data.description,
+          Price: data.price,
+          Location: data.location,
+          City: data.city,
+          RoomNumbers: data.roomNumbers,
+          Area: data.area,
+          Type: data.type
+        });
 
-      this.uploadedMainHeaderFiles = data.projectDetails
-      .filter((item: any) => item.type === 1)
-      .map((item: any) => ({
-        id: item.id,
-        type: 1,
-        picture: item.picture
-      }));
-
-      this.uploadedProjectFiles = data.projectDetails
-        .filter((item: any) => item.type === 2)
+        this.uploadedMainHeaderFiles = data.projectDetails
+        .filter((item: any) => item.type === 1)
         .map((item: any) => ({
           id: item.id,
-          type: 2,
+          type: 1,
           picture: item.picture
         }));
-    }
-  });
+
+        this.uploadedProjectFiles = data.projectDetails
+          .filter((item: any) => item.type === 2)
+          .map((item: any) => ({
+            id: item.id,
+            type: 2,
+            picture: item.picture
+          }));
+      }
+    });
   }
 
 
@@ -281,9 +281,6 @@ export class SumouProjectsComponent implements OnInit{
     let data = this.projectForm.value
     data.Id = this.projectId
     data.Objects = [...this.uploadedProjectFiles, ...this.uploadedMainHeaderFiles]
-
-    console.log(data.Objects);
-
 
     const formData = new FormData();
     formData.append('Id', this.projectId);
@@ -296,7 +293,7 @@ export class SumouProjectsComponent implements OnInit{
     formData.append('Area', data.Area);
     formData.append('Type', data.Type);
     data.Objects.forEach((img:any, index:any) => {
-      formData.append(`Objects[${index}].id`, img.id);
+      formData.append(`Objects[${index}].id`, img.id || 0);
       formData.append(`Objects[${index}].type`, img.type);
       formData.append(`Objects[${index}].picture`, img.picture);
     });
@@ -314,13 +311,9 @@ export class SumouProjectsComponent implements OnInit{
           title: 'Good job!',
           text: 'Update Project Is Successed!',
           icon: 'success',
-          showCancelButton: true,
           customClass: {
             confirmButton: 'btn btn-primary w-xs me-2 mt-2',
-            cancelButton: 'btn btn-danger w-xs mt-2',
           },
-          buttonsStyling: false,
-          showCloseButton: false,
         })
       }
     })

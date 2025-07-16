@@ -3,6 +3,13 @@
 <section class="previousInvestment-sumou">
   <div class="form card p-3">
     <form class="row g-3">
+      <div class="col-12 position-relative input-container">
+        <textarea [(ngModel)]="description" class="form-control input-field" name="description" id="description" placeholder=" "></textarea>
+        <div class="icon-description d-flex justify-content-start align-items-center gap-1 w-100">
+          <i class="ri-pages-line fs-24 button-sm-hover-icon"></i>
+          <span>التفاصيل</span>
+        </div>
+      </div>
       <div class="col-12">
         <div>
           <label class="form-label">اختر صور المشروع</label>
@@ -15,41 +22,24 @@
           >
           </dropzone>
         </div>
+      </div>
 
-        <div class="my-3">
-          <div class="row g-3" *ngIf="uploadedMainHeaderFiles.length > 0">
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let file of uploadedMainHeaderFiles; let i = index" >
-              <div class="h-100 position-relative">
-                <img [src]="file.image.dataURL" class="card-img-top object-fit-cover img-thumbnail" alt="{{ file.image.name }}" style="height: 150px; object-fit: cover; border-bottom: 1px solid #ddd;" />
-                <div class="remove-btn position-absolute cr bg-danger rounded-circle d-flex justify-content-center align-items-center" (click)="removeFile(i)">
-                  <i class='bx bx-x text-white fs-4'></i>
-                </div>
-              </div>
+      <div class="row g-3" *ngIf="uploadedMainHeaderFiles.length > 0">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let file of uploadedMainHeaderFiles; let i = index" >
+          <div class="h-100 position-relative">
+            <img  [src]="file?.image.dataURL || file.image" class="card-img-top object-fit-cover img-thumbnail" alt="{{ file.image.name }}" style="height: 150px; object-fit: cover; border-bottom: 1px solid #ddd;" />
+            <div class="remove-btn position-absolute cr bg-danger rounded-circle d-flex justify-content-center align-items-center" (click)="removeFile(i)">
+              <i class='bx bx-x text-white fs-4'></i>
             </div>
           </div>
         </div>
+      </div>
 
-        @if(mainImageData){
-          <div class="card mt-4 col-md-6 mx-auto">
-            <div class="position-relative">
-              <img [src]="mainImageData.previewUrl || mainImageData" alt="Main Image" class="card-img-top" style="height: 250px; object-fit: cover;" />
-              <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2 rounded-circle" (click)="clearMainImage()" title="إزالة">&times;</button>
-            </div>
-          </div>
-        }
-      </div>
-      <div class="col-12 position-relative input-container">
-        <textarea [(ngModel)]="description" class="form-control input-field" name="description" id="description" placeholder=" "></textarea>
-        <div class="icon-description d-flex justify-content-start align-items-center gap-1 w-100">
-          <i class="ri-pages-line fs-24 button-sm-hover-icon"></i>
-          <span>التفاصيل</span>
-        </div>
-      </div>
 
       <div class="d-flex flex-column justify-content-between align-items-center">
         @if(update){
           <button class="btn btn-update" (click)="UpdatePreviousInvestments()">تعديل</button>
-        } @else if(allPreviousInvestments.length == 0){
+        } @else{
           <button class="btn btn-submit" (click)="submitPreviousInvestmentData()">حفظ</button>
         }
       </div>
@@ -62,7 +52,7 @@
       <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center border-bottom" >
           <div>
-            <h4 class="card-title">المقاولات</h4>
+            <h4 class="card-title">المشاريع السابقة</h4>
           </div>
         </div>
 
@@ -71,7 +61,7 @@
             <table class="table align-middle text-nowrap table-hover table-centered mb-0">
               <thead class="bg-light-subtle">
                 <tr>
-                  <th style="width: 25%">الصورة</th>
+                  <th style="width: 25%">الصورة الرئيسية</th>
                   <th style="width: 75%">التفاصيل</th>
                   <th style="white-space: nowrap;" class="text-center">الإجراء</th>
                 </tr>
@@ -81,7 +71,7 @@
                   <tr>
                     <td>
                       <img
-                        [src]="item?.fileUrl"
+                        [src]="item?.images[0]?.image"
                         alt="Project Image"
                         width="60"
                         height="60"
@@ -92,6 +82,12 @@
                     <td class="w-100">{{ item.description }}</td>
                     <td>
                       <div class="d-flex gap-2">
+                        <a href="javascript:void(0);" class="btn btn-light btn-sm"  (click)="openModal(exampleXl, { size: 'xl' }, item.id)" (click)="getInvestmentDataById(item.id)">
+                          <iconify-icon
+                            icon="solar:eye-broken"
+                            class="align-middle fs-18"
+                          ></iconify-icon>
+                        </a>
                         <a href="javascript:void(0);" class="btn btn-soft-primary btn-sm">
                           <iconify-icon
                             (click)="patchPreviousInvestmentsData(item)"
@@ -114,7 +110,7 @@
           </div>
         </div>
 
-        <!-- <div class="card-footer border-top">
+        <div class="card-footer border-top">
           <nav aria-label="Page navigation example">
             <ngb-pagination
               [collectionSize]="totalItems"
@@ -122,12 +118,68 @@
               [pageSize]="pageSize"
               class="pagination justify-content-end mb-0"
             >
-              <ng-template ngbPaginationPrevious>Previous</ng-template>
-              <ng-template ngbPaginationNext>Next</ng-template>
+              <ng-template ngbPaginationPrevious>السابق</ng-template>
+              <ng-template ngbPaginationNext>التالي</ng-template>
             </ngb-pagination>
           </nav>
-        </div> -->
+        </div>
       </div>
     </div>
   </div>
 </section>
+
+
+<!-- Model Project Details -->
+<ng-template #exampleXl let-modal class="modal fade" id="exampleModalXl" tabindex="-1" aria-labelledby="exampleModalXlLabel" aria-hidden="true">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title h4" id="exampleModalXlLabel">
+        Project Details
+      </h5>
+      <button
+        (click)="modal.close()"
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="modal"
+        aria-label="Close"
+      ></button>
+    </div>
+    <div class="modal-body">
+      <div class="table-responsive">
+        <table class="table text-nowrap table-hover mb-0">
+          <thead class="bg-light-subtle">
+            <tr>
+              <th class="w-25">الصور الرئيسية</th>
+              <th>التفاصيل</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <img
+                  [src]="InvestmentsData?.images[0]?.image"
+                  [alt]="InvestmentsData?.description"
+                  width="60"
+                  height="60"
+                  class="rounded"
+                  style="object-fit: cover"
+                />
+              </td>
+              <td>{{ InvestmentsData?.description }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="row g-2">
+        @for (project of InvestmentsData?.images; track $index) {
+          <div class="col-md-3 col-12">
+            <div class="card p-2 h-100">
+              <img [src]="project.image" class="img-details" [alt]="InvestmentsData?.description">
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</ng-template>

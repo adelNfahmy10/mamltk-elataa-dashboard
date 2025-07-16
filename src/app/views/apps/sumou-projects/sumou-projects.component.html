@@ -17,7 +17,12 @@
         <div class="row g-3" *ngIf="uploadedMainHeaderFiles.length > 0">
           <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let file of uploadedMainHeaderFiles; let i = index" >
             <div class="h-100 position-relative">
-              <img [src]="file.picture.dataURL" class="card-img-top object-fit-cover img-thumbnail" alt="{{ file.name }}" style="height: 150px; object-fit: cover; border-bottom: 1px solid #ddd;" />
+             <img
+                [src]="file.picture?.dataURL || file.picture"
+                class="card-img-top object-fit-cover img-thumbnail"
+                alt="project-image"
+                style="height: 150px; object-fit: cover; border-bottom: 1px solid #ddd;"
+              />
               <div class="remove-btn position-absolute cr bg-danger rounded-circle d-flex justify-content-center align-items-center" (click)="removeFile(i)">
                 <i class='bx bx-x text-white fs-4'></i>
               </div>
@@ -110,7 +115,7 @@
           <div class="row g-3" *ngIf="uploadedProjectFiles.length > 0">
             <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let file of uploadedProjectFiles; let i = index" >
               <div class="h-100 position-relative">
-                <img [src]="file.picture.dataURL" class="card-img-top object-fit-cover img-thumbnail" alt="{{ file.name }}" style="height: 150px; object-fit: cover; border-bottom: 1px solid #ddd;" />
+                <img [src]="file.picture?.dataURL || file.picture " class="card-img-top object-fit-cover img-thumbnail" alt="{{ file.name }}" style="height: 150px; object-fit: cover; border-bottom: 1px solid #ddd;" />
                 <div class="remove-btn position-absolute cr bg-danger rounded-circle d-flex justify-content-center align-items-center" (click)="removeProjectFile(i)">
                   <i class='bx bx-x text-white fs-4'></i>
                 </div>

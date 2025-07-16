@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, TemplateRef } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PreviousInvestmentsService } from '@core/services/previousInvestments/previous-investments.service';
-import { NgbDropdownModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule, NgbModal, NgbModalOptions, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';
 import { PageTitleComponent } from "@component/page-title.component";
 import { DROPZONE_CONFIG, DropzoneConfigInterface, DropzoneModule } from "ngx-dropzone-wrapper";
@@ -40,11 +40,13 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
 export class SumouPreviousInvestmentsComponent {
   private readonly _PreviousInvestmentsService = inject(PreviousInvestmentsService)
 
-  mainImageData: { file: File; previewUrl: string | null } | null = null;
   allPreviousInvestments:any[] = []
   description:string = ''
   previousInvestmentId:any= null
+  InvestmentsData!:any
   update:boolean = false
+  private modalService = inject(NgbModal)
+
 
   ngOnInit(): void {
     this.GetAllPreviousInvestments()
@@ -55,6 +57,18 @@ export class SumouPreviousInvestmentsComponent {
       next:(res)=>{
         this.allPreviousInvestments = res.data
         this.totalItems = this.allPreviousInvestments.length
+      }
+    })
+  }
+
+  openModal(content: TemplateRef<HTMLElement>, options: NgbModalOptions, id:number) {
+    this.modalService.open(content, options)
+  }
+
+  getInvestmentDataById(id:number):void{
+    this._PreviousInvestmentsService.GetPreviousInvestmentsById(id).subscribe({
+      next:(res)=>{
+        this.InvestmentsData = res.data
       }
     })
   }
@@ -102,34 +116,12 @@ export class SumouPreviousInvestmentsComponent {
     }
   }
 
-  // Project Image
-  handleMainImageSelect(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      const selected = input.files[0];
-
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.mainImageData = {
-          file: selected,
-          previewUrl: e.target.result
-        };
-      };
-
-      reader.readAsDataURL(selected);
-      input.value = '';
-    }
-  }
-  clearMainImage(): void {
-    this.mainImageData = null;
-  }
-
   // Submit Form PreviousInvestments
   submitPreviousInvestmentData():void{
-    console.log(this.uploadedMainHeaderFiles);
-    console.log(this.description);
-
-
+    let data = {
+      Description: this.description,
+      investmentImages : this.uploadedMainHeaderFiles
+    }
 
     let formData = new FormData
     formData.append('Description', this.description)
@@ -137,12 +129,13 @@ export class SumouPreviousInvestmentsComponent {
       formData.append(`investmentImages[${index}].type`, img.type),
       formData.append(`investmentImages[${index}].image`, img.image)
     })
-    
+
     this._PreviousInvestmentsService.CreatePreviousInvestments(formData).subscribe({
       next:(res)=>{
-        this.GetAllPreviousInvestments()
-        this.description = ''
-        this.mainImageData = null
+        this.GetAllPreviousInvestments();
+        this.description = '';
+        this.uploadedMainHeaderFiles = [];
+        if (this.dropzoneRef) this.dropzoneRef.removeAllFiles();
         Swal.fire({
           title: 'Good job!',
           text: 'Create Contracting Is Success!',
@@ -173,43 +166,56 @@ export class SumouPreviousInvestmentsComponent {
   }
 
   // Patch Data PreviousInvestments
-  patchPreviousInvestmentsData(contracting:any):void{
-    this.previousInvestmentId = contracting.id
+  patchPreviousInvestmentsData(investment:any):void{
+    this.previousInvestmentId = investment.id;
+
     this._PreviousInvestmentsService.GetPreviousInvestmentsById(this.previousInvestmentId).subscribe({
-      next:(res)=>{
-        this.description = res.data.description,
-        this.mainImageData = res.data.fileUrl
-        this.update = true
+      next: (res) => {
+        const data = res.data;
+        this.description = data.description;
+
+        this.uploadedMainHeaderFiles = data.images.map((img: any) => ({
+          id: img.id,
+          type: img.type,
+          image: img.image,
+        }));
+
+        this.update = true;
       }
-    })
+    });
   }
 
   // Update PreviousInvestments
   UpdatePreviousInvestments():void{
-    let formData = new FormData
-    formData.append('Id', this.previousInvestmentId)
-    formData.append('Description', this.description)
-    if (this.mainImageData) {
-      formData.append('File', this.mainImageData?.file);
-    }
+    const formData = new FormData();
+    formData.append('Id', this.previousInvestmentId);
+    formData.append('Description', this.description);
+
+    this.uploadedMainHeaderFiles.forEach((img, index) => {
+      formData.append(`investmentImages[${index}].Id`, img.id || 0);
+      formData.append(`investmentImages[${index}].type`, img.type);
+      formData.append(`investmentImages[${index}].image`, img.image);
+    });
 
     this._PreviousInvestmentsService.UpdatePreviousInvestments(formData).subscribe({
-      next:(res)=>{
+      next: () => {
+        this.GetAllPreviousInvestments();
+        this.description = '';
+        this.uploadedMainHeaderFiles = [];
+        this.previousInvestmentId = null;
+        this.update = false;
+        if (this.dropzoneRef) this.dropzoneRef.removeAllFiles();
+
         Swal.fire({
-          title: 'Good job!',
-          text: 'Update Contracting Is Success!',
+          title: 'تم التحديث!',
+          text: 'تم تعديل بيانات الاستثمار السابق بنجاح.',
           icon: 'success',
           customClass: {
             confirmButton: 'btn btn-primary w-xs me-2 mt-2',
           },
-        })
-        this.description = ''
-        this.mainImageData = null
-        this.previousInvestmentId = null
-        this.update = false
-        this.GetAllPreviousInvestments()
+        });
       }
-    })
+    });
   }
 
   // Pagination PreviousInvestments
