@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ContactService {
-private readonly _HttpClient = inject(HttpClient)
+  private readonly _HttpClient = inject(HttpClient)
 
   GetAllContacts():Observable<any>{
     return this._HttpClient.get(`${environment.baseURL}api/Contacts/GetAllContacts`)

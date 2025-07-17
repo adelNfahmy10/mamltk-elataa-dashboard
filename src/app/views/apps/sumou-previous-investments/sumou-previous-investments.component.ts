@@ -1,12 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, TemplateRef } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PreviousInvestmentsService } from '@core/services/previousInvestments/previous-investments.service';
 import { NgbDropdownModule, NgbModal, NgbModalOptions, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';
 import { PageTitleComponent } from "@component/page-title.component";
 import { DROPZONE_CONFIG, DropzoneConfigInterface, DropzoneModule } from "ngx-dropzone-wrapper";
-import Editor from 'quill/core/editor';
 import { QuillEditorComponent } from "ngx-quill";
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
@@ -27,7 +26,8 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     CommonModule,
     ReactiveFormsModule,
     DropzoneModule,
-    QuillEditorComponent
+    QuillEditorComponent,
+    ReactiveFormsModule
 ],
   templateUrl: './sumou-previous-investments.component.html',
   styleUrl: './sumou-previous-investments.component.scss',
@@ -39,8 +39,11 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     }
   ]
 })
+
+
 export class SumouPreviousInvestmentsComponent {
   private readonly _PreviousInvestmentsService = inject(PreviousInvestmentsService)
+  private readonly _FormBuilder = inject(FormBuilder)
   private modalService = inject(NgbModal)
 
   allPreviousInvestments:any[] = []
@@ -117,15 +120,24 @@ export class SumouPreviousInvestmentsComponent {
     }
   }
 
+  investmentForm:FormGroup = this._FormBuilder.group({
+    Title:[''],
+    Description:[''],
+    investmentImages:this._FormBuilder.array([])
+  })
+
+
   // Submit Form PreviousInvestments
   submitPreviousInvestmentData():void{
-    let data = {
-      Description: this.description,
-      investmentImages : this.uploadedMainHeaderFiles
-    }
+    let data = this.investmentForm.value
+    data.investmentImages = this.uploadedMainHeaderFiles
+
+    console.log(data);
+
 
     let formData = new FormData
-    formData.append('Description', this.description)
+    formData.append('Title', data.Title)
+    formData.append('Description', data.Description)
     this.uploadedMainHeaderFiles.forEach((img, index)=>{
       formData.append(`investmentImages[${index}].type`, img.type),
       formData.append(`investmentImages[${index}].image`, img.image)
@@ -134,12 +146,11 @@ export class SumouPreviousInvestmentsComponent {
     this._PreviousInvestmentsService.CreatePreviousInvestments(formData).subscribe({
       next:(res)=>{
         this.GetAllPreviousInvestments();
-        this.description = '';
+        this.investmentForm.reset()
         this.uploadedMainHeaderFiles = [];
         if (this.dropzoneRef) this.dropzoneRef.removeAllFiles();
         Swal.fire({
-          title: 'Good job!',
-          text: 'Create Contracting Is Success!',
+          title: 'تم تسجيل بيانات الاستثمار السابق بنجاح',
           icon: 'success',
           customClass: {
             confirmButton: 'btn btn-primary w-xs me-2 mt-2',
@@ -155,8 +166,7 @@ export class SumouPreviousInvestmentsComponent {
       next:(res)=>{
         this.GetAllPreviousInvestments()
         Swal.fire({
-          title: 'Good job!',
-          text: 'Delete PreviousInvestments Is Success!',
+          title: 'تم حذف  بيانات الاستثمار السابق بنجاح',
           icon: 'success',
           customClass: {
             confirmButton: 'btn btn-primary w-xs me-2 mt-2',
@@ -208,8 +218,7 @@ export class SumouPreviousInvestmentsComponent {
         if (this.dropzoneRef) this.dropzoneRef.removeAllFiles();
 
         Swal.fire({
-          title: 'تم التحديث!',
-          text: 'تم تعديل بيانات الاستثمار السابق بنجاح.',
+          title: 'تم تعديل بيانات الاستثمار السابق بنجاح.',
           icon: 'success',
           customClass: {
             confirmButton: 'btn btn-primary w-xs me-2 mt-2',
@@ -227,35 +236,6 @@ export class SumouPreviousInvestmentsComponent {
     const start = (this.currentPage - 1) * this.pageSize;
     const end = start + this.pageSize;
     return this.allPreviousInvestments.slice(start, end);
-  }
-
-  editor!: Editor
-
-  content: string = ` <div id="snow-editor" style="height: 300px">
-<h3>
-    <span class="ql-size-large">Hello World!</span>
-</h3>
-<p><br /></p>
-<h3>
-    This is a simple editable area.
-</h3>
-<p><br /></p>
-<ul>
-    <li>
-        Select a text to reveal the
-        toolbar.
-    </li>
-    <li>
-        Edit rich document
-        on-the-fly, so elastic!
-    </li>
-</ul>
-<p><br /></p>
-<p>End of simple area</p>
-</div>`
-
-  public model = {
-    editorData: this.content,
   }
 
   editorConfig = {

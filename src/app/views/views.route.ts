@@ -11,6 +11,7 @@ import { SumouContractingComponent } from './apps/sumou-contracting/sumou-contra
 import { SumouConfigurationComponent } from './apps/sumou-configuration/sumou-configuration.component'
 import { SumouContactComponent } from './apps/sumou-contact/sumou-contact.component'
 import { SumouPreviousInvestmentsComponent } from './apps/sumou-previous-investments/sumou-previous-investments.component'
+import { SumouBookComponent } from './apps/sumou-book/sumou-book.component'
 
 export const VIEWS_ROUTES: Route[] = [
   {
@@ -64,6 +65,11 @@ export const VIEWS_ROUTES: Route[] = [
     path: 'configuration',
     component: SumouConfigurationComponent,
     data: { title: 'Configuration' },
+  },
+  {
+    path: 'book',
+    component: SumouBookComponent,
+    data: { title: 'Books' },
   },
   {
     path: 'order',

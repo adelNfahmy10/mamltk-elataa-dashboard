@@ -1,0 +1,58 @@
+<app-page-title title="مملكة العطاء" subTitle="طلبات الحجز" />
+
+<section class="book-sumou">
+
+   <div class="row">
+    <div class="col-xl-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center border-bottom" >
+          <div>
+            <h4 class="card-title">طلبات الحجز</h4>
+          </div>
+        </div>
+
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table align-middle text-nowrap table-hover table-centered mb-0">
+              <thead class="bg-light-subtle">
+                <tr>
+                  <th>المشــروع</th>
+                  <th>الإســـم</th>
+                  <th>رقم التليفون</th>
+                  <th>العنــوان</th>
+                  <th>الرســـالة</th>
+                  <!-- <th style="white-space: nowrap;" class="text-center">الإجراء</th> -->
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of pagedData; track $index) {
+                  <tr>
+                    <td>{{ item.projectTitle }}</td>
+                    <td>{{ item.fullName }}</td>
+                    <td>{{ item.phoneNumber }}</td>
+                    <td>{{ item.location }}</td>
+                    <td>{{ item.message }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card-footer border-top">
+          <nav aria-label="Page navigation example">
+            <ngb-pagination
+              [collectionSize]="totalItems"
+              [(page)]="currentPage"
+              [pageSize]="pageSize"
+              class="pagination justify-content-end mb-0"
+            >
+              <ng-template ngbPaginationPrevious>السابق</ng-template>
+              <ng-template ngbPaginationNext>التالي</ng-template>
+            </ngb-pagination>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

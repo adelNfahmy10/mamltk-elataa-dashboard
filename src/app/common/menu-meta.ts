@@ -164,7 +164,7 @@ export const MENU_ITEMS: MenuItemType[] = [
   },
   {
     key: 'previous-projects',
-    label: 'مشاريعنا السابقة',
+    label: 'أعمالنا السابقة',
     icon: 'ri-building-2-line',
     url: '/previous-projects',
   },
@@ -192,6 +192,12 @@ export const MENU_ITEMS: MenuItemType[] = [
     icon: 'ri-building-2-line',
     url: '/contact',
   },
+  {
+    key: 'book',
+    label: 'طلبات الحجز',
+    icon: 'ri-building-2-line',
+    url: '/book',
+  }
   // {
   //   key: 'orders',
   //   label: 'Orders',
