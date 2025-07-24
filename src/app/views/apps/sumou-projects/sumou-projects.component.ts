@@ -181,7 +181,8 @@ export class SumouProjectsComponent implements OnInit{
     RoomNumbers: [''],
     Area: [''],
     Type: [''],
-    Objects: [''],
+    Space: [''],
+    Objects: ['']
   })
 
   // Submit Project Form
@@ -198,6 +199,7 @@ export class SumouProjectsComponent implements OnInit{
     formData.append('RoomNumbers', data.RoomNumbers);
     formData.append('Area', data.Area);
     formData.append('Type', data.Type);
+    formData.append('Space', data.Space);
     data.Objects.forEach((img:any, index:any) => {
       formData.append(`Objects[${index}].picture`, img.picture);
       formData.append(`Objects[${index}].type`, img.type);
@@ -257,7 +259,8 @@ export class SumouProjectsComponent implements OnInit{
           City: data.city,
           RoomNumbers: data.roomNumbers,
           Area: data.area,
-          Type: data.type
+          Type: data.type,
+          Space: data.space
         });
 
         this.uploadedMainHeaderFiles = data.projectDetails
@@ -295,6 +298,7 @@ export class SumouProjectsComponent implements OnInit{
     formData.append('RoomNumbers', data.RoomNumbers);
     formData.append('Area', data.Area);
     formData.append('Type', data.Type);
+    formData.append('Space', data.Space);
     data.Objects.forEach((img:any, index:any) => {
       formData.append(`Objects[${index}].id`, img.id || 0);
       formData.append(`Objects[${index}].type`, img.type);
