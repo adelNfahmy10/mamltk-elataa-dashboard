@@ -1,10 +1,11 @@
 <app-page-title title="ممكلة العطاء" subTitle="المشروعات" />
 
 <section class="projects">
+  <h1>إضافة مشروع التمليك</h1>
   <div class="form card p-3">
     <form class="row g-3" [formGroup]="projectForm">
       <h3>الصورة الرئيسية</h3>
-      <div class="my-3">
+      <div class="my-2">
         <dropzone
           [config]="customDropzoneConfig"
           (success)="onUploadSuccess($event)"
@@ -31,10 +32,33 @@
         </div>
       </div>
 
+      <h3>صور المشروع</h3>
+      <div class="my-2">
+        <dropzone
+          [config]="customDropzoneConfig"
+          (success)="onUploadProjectSuccess($event)"
+          [message]="dropzoneMsg"
+          (init)="onDropzoneProjectInit($event)"
+          class="dropzone"
+        >
+        </dropzone>
+
+        <div class="row g-3" *ngIf="uploadedProjectFiles.length > 0">
+          <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let file of uploadedProjectFiles; let i = index" >
+            <div class="h-100 position-relative">
+              <img [src]="file.picture?.dataURL || file.picture " class="card-img-top object-fit-cover img-thumbnail" alt="{{ file.name }}" style="height: 150px; object-fit: cover; border-bottom: 1px solid #ddd;" />
+              <div class="remove-btn position-absolute cr bg-danger rounded-circle d-flex justify-content-center align-items-center" (click)="removeProjectFile(i)">
+                <i class='bx bx-x text-white fs-4'></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <hr>
 
       <h3>بيانات المشروع</h3>
-      <div class="col-12 position-relative input-container mt-3">
+      <div class="col-md-4 col-12 position-relative input-container mt-3">
         <select selectFormInput class="form-control" data-choices name="choices-single-default" id="choices-single-default" formControlName="Type" >
           <option value="" disabled>اختر نوع المشروع</option>
           <option value="1">مشاريع التمليك</option>
@@ -42,7 +66,7 @@
         </select>
       </div>
 
-      <div class="col-md-6 col-12 position-relative input-container">
+      <div class="col-md-4 col-12 position-relative input-container">
         <input type="text" formControlName="Title" class="form-control input-field" name="Title" id="Title" placeholder=" ">
         <div class="icon-title d-flex justify-content-start align-items-center gap-1 w-100">
           <i class="ri-pages-line fs-24 button-sm-hover-icon"></i>
@@ -50,7 +74,7 @@
         </div>
       </div>
 
-      <div class="col-md-6 col-12 position-relative input-container">
+      <div class="col-md-4 col-12 position-relative input-container">
         <input type="number" formControlName="Price" class="form-control input-field" name="price" id="price" placeholder=" ">
         <div class="icon-price d-flex justify-content-start align-items-center gap-1 w-100">
           <i class="ri-money-dollar-circle-line fs-24 button-sm-hover-icon"></i>
@@ -58,7 +82,7 @@
         </div>
       </div>
 
-      <div class="col-md-6 col-12 position-relative input-container">
+      <div class="col-md-4 col-12 position-relative input-container">
         <input type="text" formControlName="Area" class="form-control input-field" name="area" id="area" placeholder=" ">
         <div class="icon-area d-flex justify-content-start align-items-center gap-1 w-100">
           <i class="ri-home-4-line fs-24 button-sm-hover-icon"></i>
@@ -66,7 +90,7 @@
         </div>
       </div>
 
-      <div class="col-md-6 col-12 position-relative input-container">
+      <div class="col-md-4 col-12 position-relative input-container">
         <input type="text" formControlName="City" class="form-control input-field" name="city" id="city" placeholder=" ">
         <div class="icon-city d-flex justify-content-start align-items-center gap-1 w-100">
           <i class="ri-user-location-fill fs-24 button-sm-hover-icon"></i>
@@ -74,7 +98,7 @@
         </div>
       </div>
 
-      <div class="col-md-6 col-12 position-relative input-container">
+      <div class="col-md-4 col-12 position-relative input-container">
         <input type="text" formControlName="Location" class="form-control input-field" name="location" id="location" placeholder=" ">
         <div class="icon-location d-flex justify-content-start align-items-center gap-1 w-100">
           <i class="ri-user-location-line fs-24 button-sm-hover-icon"></i>
@@ -82,7 +106,7 @@
         </div>
       </div>
 
-      <div class="col-md-6 col-12 position-relative input-container">
+      <div class="col-md-4 col-12 position-relative input-container">
         <input type="number" formControlName="RoomNumbers" class="form-control input-field" name="rooms" id="rooms" placeholder=" ">
         <div class="icon-rooms d-flex justify-content-start align-items-center gap-1 w-100">
           <i class="ri-numbers-line fs-24 button-sm-hover-icon"></i>
@@ -90,7 +114,7 @@
         </div>
       </div>
 
-      <div class="col-md-6 col-12 position-relative input-container">
+      <div class="col-md-4 col-12 position-relative input-container">
         <input type="number" formControlName="Space" class="form-control input-field" name="space" id="space" placeholder=" ">
         <div class="icon-rooms d-flex justify-content-start align-items-center gap-1 w-100">
           <i class="fa-solid fa-subscript fs-18 button-sm-hover-icon"></i>
@@ -109,38 +133,111 @@
           [(ngModel)]="content"
           theme="snow"
           [modules]="editorConfig"
-          style="height: 300px"
+          style="height: 150px"
           class="w-100"
         ></quill-editor>
       </div>
-    </form>
 
-    <div class="row my-3 g-3">
       <div class="col-12">
-        <h3>صور المشروع</h3>
-        <div class="my-3">
-          <dropzone
-            [config]="customDropzoneConfig"
-            (success)="onUploadProjectSuccess($event)"
-            [message]="dropzoneMsg"
-            (init)="onDropzoneProjectInit($event)"
-            class="dropzone"
-          >
-          </dropzone>
+        <h1>إضافة النماذج</h1>
+        <div class="row g-3" formGroupName="Models">
+          <div class="col-12">
+            <dropzone
+              [config]="customDropzoneConfig"
+              (success)="onUploadModelsSuccess($event)"
+              [message]="dropzoneMsg"
+              (init)="onDropzoneModelsInit($event)"
+              class="dropzone"
+            >
+            </dropzone>
 
-          <div class="row g-3" *ngIf="uploadedProjectFiles.length > 0">
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let file of uploadedProjectFiles; let i = index" >
-              <div class="h-100 position-relative">
-                <img [src]="file.picture?.dataURL || file.picture " class="card-img-top object-fit-cover img-thumbnail" alt="{{ file.name }}" style="height: 150px; object-fit: cover; border-bottom: 1px solid #ddd;" />
-                <div class="remove-btn position-absolute cr bg-danger rounded-circle d-flex justify-content-center align-items-center" (click)="removeProjectFile(i)">
-                  <i class='bx bx-x text-white fs-4'></i>
+            <div class="row g-3" *ngIf="uploadedModelsFiles.length > 0">
+              <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let file of uploadedModelsFiles; let i = index" >
+                <div class="h-100 position-relative">
+                  <img [src]="file?.dataURL || file" class="card-img-top object-fit-cover img-thumbnail" alt="وحدات سكنية" style="height: 150px; object-fit: cover; border-bottom: 1px solid #ddd;" />
+                  <div class="remove-btn position-absolute cr bg-danger rounded-circle d-flex justify-content-center align-items-center" (click)="removeModelsFile(i)">
+                    <i class='bx bx-x text-white fs-4'></i>
+                  </div>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          <hr>
+
+          <h3>بيانات النموذج</h3>
+          <div class="col-md-4 col-12 position-relative input-container">
+            <input type="text" formControlName="title" class="form-control input-field" name="title" id="title" placeholder=" ">
+            <div class="icon-title d-flex justify-content-start align-items-center gap-1 w-100">
+              <i class="ri-pages-line fs-24 button-sm-hover-icon"></i>
+              <span>العنوان الرئيسي</span>
+            </div>
+          </div>
+
+          <div class="col-md-4 col-12 position-relative input-container">
+            <input type="number" formControlName="price" class="form-control input-field" name="price" id="price" placeholder=" ">
+            <div class="icon-price d-flex justify-content-start align-items-center gap-1 w-100">
+              <i class="ri-money-dollar-circle-line fs-24 button-sm-hover-icon"></i>
+              <span>السعر</span>
+            </div>
+          </div>
+
+          <div class="col-md-4 col-12 position-relative input-container">
+            <input type="number" formControlName="roomNumbers" class="form-control input-field" name="rooms" id="rooms" placeholder=" ">
+            <div class="icon-rooms d-flex justify-content-start align-items-center gap-1 w-100">
+              <i class="ri-numbers-line fs-24 button-sm-hover-icon"></i>
+              <span>عدد الغرف</span>
+            </div>
+          </div>
+
+          <div class="col-md-4 col-12 position-relative input-container">
+            <input type="number" formControlName="pathRoomNumber" class="form-control input-field" name="pathRoomNumber" id="pathRoomNumber" placeholder=" ">
+            <div class="icon-rooms d-flex justify-content-start align-items-center gap-1 w-100">
+              <i class="ri-numbers-line fs-24 button-sm-hover-icon"></i>
+              <span>عدد الحمامات</span>
+            </div>
+          </div>
+
+          <div class="col-md-4 col-12 position-relative input-container">
+            <input type="number" formControlName="space" class="form-control input-field" name="space" id="space" placeholder=" ">
+            <div class="icon-rooms d-flex justify-content-start align-items-center gap-1 w-100">
+              <i class="fa-solid fa-subscript fs-18 button-sm-hover-icon"></i>
+              <span>المساحة</span>
+            </div>
+          </div>
+
+          <div class="col-md-4 col-12 position-relative input-container">
+            <input type="text" formControlName="floor" class="form-control input-field" name="floor" id="floor" placeholder=" ">
+            <div class="icon-rooms d-flex justify-content-start align-items-center gap-1 w-100">
+              <i class="ri-home-4-line fs-24 button-sm-hover-icon"></i>
+              <span>الدور</span>
+            </div>
+          </div>
+
+          <div class="col-12 position-relative input-container">
+            <div class="form-check">
+              <!-- Checkbox -->
+              <div class="d-flex align-items-center gap-2">
+                <label class="form-check-label d-flex align-items-center gap-2" for="hasParking">
+                  <i class="fa-solid fa-car fs-18 button-sm-hover-icon"></i>
+                  <span>موقف السيارات</span>
+                </label>
+                <input type="checkbox" class="form-check-input" id="hasParking" (click)="toggleCheckBox()" />
+              </div>
+
+              <div *ngIf="showParkingInput">
+                <input
+                  type="text"
+                  formControlName="parking"
+                  class="form-control"
+                  placeholder="...موقف السيارات"
+                />
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </form>
 
     <div class="d-flex flex-column justify-content-between align-items-center">
         @if(update){
@@ -150,6 +247,9 @@
         }
     </div>
   </div>
+
+
+
 
 
   <div class="row">
