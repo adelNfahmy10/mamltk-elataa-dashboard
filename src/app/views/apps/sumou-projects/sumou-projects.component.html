@@ -139,6 +139,128 @@
       </div>
 
       <div class="col-12">
+        <h1 class="mb-4">إضافة نماذج المشروع</h1>
+
+        <!-- formArrayName للـ Models -->
+        <div formArrayName="Models">
+          <div class="row g-3 border border-2 rounded mb-4 position-relative pb-2" *ngFor="let model of modelsArray.controls; let i = index" [formGroupName]="i" >
+            <div class="d-flex align-items-center gap-3">
+              @if(i > 0){
+                <i class="ri-close-circle-line fs-3 text-danger cr icon-close mt-0" (click)="removeModel(i)"></i>
+              }
+              <h3 class="my-0">نموذج {{i + 1}}</h3>
+            </div>
+
+            <!-- Dropzone -->
+            <div class="col-12">
+              <dropzone
+                [config]="customDropzoneConfig"
+                (success)="onUploadModelsSuccess($event, i)"
+                [message]="dropzoneMsg"
+                (init)="onDropzoneModelsInit($event, i)"
+                class="dropzone"
+              ></dropzone>
+
+              <!-- صور النموذج -->
+              <div class="row g-3 mt-2" *ngIf="uploadedModelsFiles[i]?.length > 0">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let file of uploadedModelsFiles[i]; let j = index" >
+                  <div class="h-100 position-relative">
+                    <img
+                      [src]="file?.dataURL || file"
+                      class="card-img-top object-fit-cover img-thumbnail"
+                      alt="وحدات سكنية"
+                      style="height: 150px; object-fit: cover; border-bottom: 1px solid #ddd;"
+                    />
+                    <div
+                      class="remove-btn position-absolute cr bg-danger rounded-circle d-flex justify-content-center align-items-center"
+                      (click)="removeModelsFile(i, j)"
+                    >
+                      <i class="bx bx-x text-white fs-4"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- بيانات النموذج -->
+            <div class="col-12">
+              <h3>بيانات النموذج {{ i + 1 }}</h3>
+            </div>
+
+            <div class="col-md-4 col-12 position-relative input-container">
+              <input type="text" formControlName="title" class="form-control input-field" placeholder=" ">
+              <div class="icon-title d-flex align-items-center gap-1 w-100">
+                <i class="ri-pages-line fs-24"></i>
+                <span>العنوان الرئيسي</span>
+              </div>
+            </div>
+
+            <div class="col-md-4 col-12 position-relative input-container">
+              <input type="number" formControlName="price" class="form-control input-field" placeholder=" ">
+              <div class="icon-price d-flex align-items-center gap-1 w-100">
+                <i class="ri-money-dollar-circle-line fs-24"></i>
+                <span>السعر</span>
+              </div>
+            </div>
+
+            <div class="col-md-4 col-12 position-relative input-container">
+              <input type="number" formControlName="roomNumbers" class="form-control input-field" placeholder=" ">
+              <div class="icon-rooms d-flex align-items-center gap-1 w-100">
+                <i class="ri-numbers-line fs-24"></i>
+                <span>عدد الغرف</span>
+              </div>
+            </div>
+
+            <div class="col-md-4 col-12 position-relative input-container">
+              <input type="number" formControlName="pathRoomNumber" class="form-control input-field" placeholder=" ">
+              <div class="icon-rooms d-flex align-items-center gap-1 w-100">
+                <i class="ri-numbers-line fs-24"></i>
+                <span>عدد الحمامات</span>
+              </div>
+            </div>
+
+            <div class="col-md-4 col-12 position-relative input-container">
+              <input type="number" formControlName="space" class="form-control input-field" placeholder=" ">
+              <div class="icon-rooms d-flex align-items-center gap-1 w-100">
+                <i class="fa-solid fa-subscript fs-18"></i>
+                <span>المساحة</span>
+              </div>
+            </div>
+
+            <div class="col-md-4 col-12 position-relative input-container">
+              <input type="text" formControlName="floor" class="form-control input-field" placeholder=" ">
+              <div class="icon-rooms d-flex align-items-center gap-1 w-100">
+                <i class="ri-home-4-line fs-24"></i>
+                <span>الدور</span>
+              </div>
+            </div>
+
+            <!-- Checkbox موقف السيارات -->
+            <div class="col-12 position-relative input-container">
+              <div class="form-check d-flex align-items-center gap-2">
+                <label class="form-check-label" for="hasParking{{ i }}">
+                  <i class="fa-solid fa-car fs-18 ms-1"></i>
+                  <span>موقف السيارات</span>
+                </label>
+                <input type="checkbox" class="form-check-input" id="hasParking{{ i }}" (change)="toggleParkingInput(i)" />
+              </div>
+
+              <div *ngIf="showParkingInput[i]">
+                <input type="text" formControlName="parking" class="form-control mt-2" placeholder="...موقف السيارات" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- زر إضافة نموذج جديد -->
+        <div class="add-btn d-flex align-items-center gap-2 cr"  (click)="addModel()">
+          <i class="ri-file-add-line fs-3"></i>
+          <h4 class="mb-0">إضافة نموذج جديد</h4>
+        </div>
+      </div>
+
+
+      <!-- <div class="col-12">
         <h1>إضافة النماذج</h1>
         <div class="row g-3" formGroupName="Models">
           <div class="col-12">
@@ -216,7 +338,6 @@
 
           <div class="col-12 position-relative input-container">
             <div class="form-check">
-              <!-- Checkbox -->
               <div class="d-flex align-items-center gap-2">
                 <label class="form-check-label d-flex align-items-center gap-2" for="hasParking">
                   <i class="fa-solid fa-car fs-18 button-sm-hover-icon"></i>
@@ -236,7 +357,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </form>
 
     <div class="d-flex flex-column justify-content-between align-items-center">

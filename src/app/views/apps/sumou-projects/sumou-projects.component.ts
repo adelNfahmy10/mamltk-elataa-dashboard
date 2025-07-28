@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, TemplateRef } from '@angular/core';
 import { PageTitleComponent } from '@component/page-title.component';
 import { NgbDropdownModule, NgbModal, NgbModalOptions, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SelectFormInputDirective } from '@core/directive/select-form-input.directive';
 import { ProjectsService } from '@core/services/projects/projects.service';
 import { IProject } from './dat';
@@ -59,6 +59,7 @@ export class SumouProjectsComponent implements OnInit{
 
   ngOnInit(): void {
     this.getAllProjects()
+    this.addModel()
   }
 
   getAllProjects():void{
@@ -171,30 +172,44 @@ export class SumouProjectsComponent implements OnInit{
     }
   }
 
-
   // Models Images
   uploadedModelsFiles: any[] = []
-  dropzoneModelsRef: any = null;
+  dropzoneModelsRef: any[] = [];
+  showParkingInput: boolean[] = [];
 
-  // Upload Files
-  onUploadModelsSuccess(event: any): void {
-    this.uploadedModelsFiles.push(event[0])
-    console.log(this.uploadedModelsFiles);
+  // Upload Image Model
+  onUploadModelsSuccess(event: any, modelIndex: number): void {
+    if (!this.uploadedModelsFiles[modelIndex]) {
+      this.uploadedModelsFiles[modelIndex] = [];
+    }
 
+    this.uploadedModelsFiles[modelIndex].push(event[0]);
+
+    const modelsArray = this.projectForm.get('Models') as FormArray;
+    const modelGroup = modelsArray.at(modelIndex);
+    modelGroup.get('images')?.setValue([...this.uploadedModelsFiles[modelIndex]]);
   }
-
   // File Remove
-  onDropzoneModelsInit(dropzone: any): void {
-    this.dropzoneModelsRef = dropzone;
+  onDropzoneModelsInit(dropzone: any, modelIndex: number): void {
+    this.dropzoneModelsRef[modelIndex] = dropzone;
   }
+  removeModelsFile(modelIndex: number, fileIndex: number): void {
+    const fileToRemove = this.uploadedModelsFiles[modelIndex][fileIndex];
 
-  removeModelsFile(index: number) {
-    const removedFile = this.uploadedModelsFiles[index];
-    this.uploadedModelsFiles.splice(index, 1);
-    if (this.dropzoneModelsRef) {
-      const dzFile = this.dropzoneModelsRef.files.find((f: any) => f.name === removedFile.name);
+    // Remove from uploaded files
+    this.uploadedModelsFiles[modelIndex].splice(fileIndex, 1);
+
+    // Update form control value
+    const modelsArray = this.projectForm.get('Models') as FormArray;
+    const modelGroup = modelsArray.at(modelIndex);
+    modelGroup.get('images')?.setValue([...this.uploadedModelsFiles[modelIndex]]);
+
+    // Remove from dropzone UI if available
+    const dropzone = this.dropzoneModelsRef[modelIndex];
+    if (dropzone) {
+      const dzFile = dropzone.files.find((f: any) => f.name === fileToRemove.name);
       if (dzFile) {
-        this.dropzoneModelsRef.removeFile(dzFile);
+        dropzone.removeFile(dzFile);
       }
     }
   }
@@ -211,21 +226,50 @@ export class SumouProjectsComponent implements OnInit{
     Type: [''],
     Space: [''],
     Objects: [''],
-    Models: this._FormBuilder.group({
-      space:[''],
-      price:[''],
-      pathRoomNumber:[''],
-      floor:[''],
-      roomNumbers:[''],
-      title:[''],
-      images:[''],
-      parking: [''],
-    }),
+    Models: this._FormBuilder.array([]),
   })
 
-  showParkingInput: boolean = false;
-  toggleCheckBox():void{
-    this.showParkingInput = !this.showParkingInput
+  // Create Model Object
+  createModelGroup(): FormGroup {
+    return this._FormBuilder.group({
+      space: [''],
+      price: [''],
+      pathRoomNumber: [''],
+      floor: [''],
+      roomNumbers: [''],
+      title: [''],
+      images: [[]],
+      parking: [''],
+    });
+  }
+
+  // Get Model
+  get modelsArray(): FormArray {
+    return this.projectForm.get('Models') as FormArray;
+  }
+
+  // Add Model
+  addModel(): void {
+    this.modelsArray.push(this.createModelGroup());
+    this.uploadedModelsFiles.push([]);
+    this.dropzoneModelsRef.push(null);
+    this.showParkingInput.push(false);
+  }
+
+  // Remove Model
+  removeModel(index: number): void {
+    this.modelsArray.removeAt(index);
+
+    this.uploadedModelsFiles.splice(index, 1);
+
+    this.dropzoneModelsRef.splice(index, 1);
+
+    this.showParkingInput.splice(index, 1);
+  }
+
+  // Toggle Parking
+  toggleParkingInput(index: number): void {
+    this.showParkingInput[index] = !this.showParkingInput[index];
   }
 
   // Submit Project Form
@@ -236,8 +280,6 @@ export class SumouProjectsComponent implements OnInit{
     if(!this.showParkingInput){
       data.Models.parking = null
     }
-
-    console.log(data);
 
     const formData = new FormData();
     formData.append('Title', data.Title);
@@ -254,16 +296,18 @@ export class SumouProjectsComponent implements OnInit{
       formData.append(`Objects[${index}].type`, img.type);
     });
 
-    formData.append(`Models[0].space`, data.Models.space);
-    formData.append(`Models[0].price`, data.Models.price);
-    formData.append(`Models[0].pathRoomNumber`, data.Models.pathRoomNumber);
-    formData.append(`Models[0].floor`, data.Models.floor);
-    formData.append(`Models[0].roomNumbers`, data.Models.roomNumbers);
-    formData.append(`Models[0].parking`, data.Models.parking);
-    formData.append(`Models[0].title`, data.Models.title);
+    data.Models.forEach((model: any, index: number) => {
+      formData.append(`Models[${index}].space`, model.space);
+      formData.append(`Models[${index}].price`, model.price);
+      formData.append(`Models[${index}].pathRoomNumber`, model.pathRoomNumber);
+      formData.append(`Models[${index}].floor`, model.floor);
+      formData.append(`Models[${index}].roomNumbers`, model.roomNumbers);
+      formData.append(`Models[${index}].title`, model.title);
+      formData.append(`Models[${index}].parking`, model.parking);
 
-    data.Models.images.forEach((img:any, index:any) => {
-      formData.append(`Models[${index}].images`, img);
+      model.images.forEach((img: any, imgIndex: number) => {
+        formData.append(`Models[${index}].images`, img);
+      });
     });
 
     this._ProjectsService.createNewProject(formData).subscribe({
