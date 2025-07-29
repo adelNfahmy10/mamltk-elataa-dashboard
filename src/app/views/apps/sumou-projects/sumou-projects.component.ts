@@ -11,6 +11,7 @@ import { DropzoneModule,DROPZONE_CONFIG,DropzoneConfigInterface} from 'ngx-dropz
 import { NewLinePipe } from '@core/pips/newLine/new-line.pipe';
 import Editor from 'quill/core/editor';
 import { QuillEditorComponent } from "ngx-quill";
+import { ProjectDetailsImageService } from '@core/services/ProjectDetails-image/project-details-image.service';
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
  // Change this to your upload POST address:
@@ -50,6 +51,7 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
 export class SumouProjectsComponent implements OnInit{
   private readonly _FormBuilder = inject(FormBuilder)
   private readonly _ProjectsService = inject(ProjectsService)
+  private readonly _ProjectDetailsImageService = inject(ProjectDetailsImageService)
   private modalService = inject(NgbModal)
 
   allProjects:IProject[] = []
@@ -94,10 +96,10 @@ export class SumouProjectsComponent implements OnInit{
     this._ProjectsService.getPorjectById(id).subscribe({
       next:(res)=>{
         this.selectedProjectById = res.data
-          if (this.selectedProjectById?.projectDetails?.length) {
-            this.firstMainPic = this.selectedProjectById.projectDetails[0].picture;
-          };
-        }
+        if (this.selectedProjectById?.projectDetails?.length) {
+          this.firstMainPic = this.selectedProjectById.projectDetails[0].picture;
+        };
+      }
     })
   }
 
@@ -110,8 +112,7 @@ export class SumouProjectsComponent implements OnInit{
                       <span class="text-muted fs-13">
                           يُفضل استخدام أبعاد 1600 × 1200 (4:3). الملفات المسموح بها: PNG، JPG، وGIF
                       </span>
-                  </div>
-              `
+                  </div>`
   customDropzoneConfig: DropzoneConfigInterface = {
     url: 'https://httpbin.org/post',
     maxFilesize: 10,
@@ -119,12 +120,28 @@ export class SumouProjectsComponent implements OnInit{
     dictDefaultMessage: ''
   };
 
-  // Upload Files
+  // Upload Header Files
   onUploadSuccess(event: any): void {
-    this.uploadedMainHeaderFiles.push({
-      type:1,
-      picture : event[0]
-    })
+    if(this.projectId){
+      let data = {
+        type:1,
+        picture : event[0]
+      }
+      let formData = new FormData()
+      formData.append('Type', data.type.toString()),
+      formData.append('Picture', data.picture),
+
+      this._ProjectDetailsImageService.CreateProjectDetailsInProject(this.projectId, formData).subscribe({
+        next:(res)=>{
+          this.uploadedMainHeaderFiles.push(data)
+        }
+      })
+    } else {
+      this.uploadedMainHeaderFiles.push({
+        type:1,
+        picture : event[0]
+      })
+    }
   }
 
   // File Remove
@@ -133,13 +150,47 @@ export class SumouProjectsComponent implements OnInit{
 
   }
 
-  removeFile(index: number) {
-    const removedFile = this.uploadedMainHeaderFiles[index].picture;
-    this.uploadedMainHeaderFiles.splice(index, 1);
-    if (this.dropzoneRef) {
-      const dzFile = this.dropzoneRef.files.find((f: any) => f.name === removedFile.name);
-      if (dzFile) {
-        this.dropzoneRef.removeFile(dzFile);
+  removeFile(index: number, fileId:any) {
+    if(fileId){
+      this._ProjectDetailsImageService.DeleteProjectDetails(fileId).subscribe({
+        next:(res)=>{
+          if(res.apiStatusCode == 200){
+            Swal.fire({
+              title: 'Good job!',
+              text: 'Main Image Is Deleted Successfully!',
+              icon: 'success',
+              customClass: {
+                confirmButton: 'btn btn-primary w-xs me-2 mt-2',
+              },
+            })
+            const removedFile = this.uploadedMainHeaderFiles[index].picture;
+            this.uploadedMainHeaderFiles.splice(index, 1);
+            if (this.dropzoneRef) {
+              const dzFile = this.dropzoneRef.files.find((f: any) => f.name === removedFile.name);
+              if (dzFile) {
+                this.dropzoneRef.removeFile(dzFile);
+              }
+            }
+          } else if(res.apiStatusCode == 400){
+            Swal.fire({
+              title: 'Sorry !',
+              text: 'Can not Delete The Last Header Image In The Project!',
+              icon: 'error',
+              customClass: {
+                confirmButton: 'btn btn-primary w-xs me-2 mt-2',
+              },
+            })
+          }
+        }
+      })
+    } else {
+      const removedFile = this.uploadedMainHeaderFiles[index].picture;
+      this.uploadedMainHeaderFiles.splice(index, 1);
+      if (this.dropzoneRef) {
+        const dzFile = this.dropzoneRef.files.find((f: any) => f.name === removedFile.name);
+        if (dzFile) {
+          this.dropzoneRef.removeFile(dzFile);
+        }
       }
     }
   }
@@ -161,13 +212,36 @@ export class SumouProjectsComponent implements OnInit{
     this.dropzoneProjectRef = dropzone;
   }
 
-  removeProjectFile(index: number) {
-    const removedFile = this.uploadedProjectFiles[index].picture;
-    this.uploadedProjectFiles.splice(index, 1);
-    if (this.dropzoneProjectRef) {
-      const dzFile = this.dropzoneProjectRef.files.find((f: any) => f.name === removedFile.name);
-      if (dzFile) {
-        this.dropzoneProjectRef.removeFile(dzFile);
+  removeProjectFile(index: number, fileId:any) {
+    if(fileId){
+      this._ProjectDetailsImageService.DeleteProjectDetails(fileId).subscribe({
+        next:(res)=>{
+          Swal.fire({
+            title: 'Good job!',
+            text: 'Project Image Is Deleted Successfully!',
+            icon: 'success',
+            customClass: {
+              confirmButton: 'btn btn-primary w-xs me-2 mt-2',
+            },
+          })
+          const removedFile = this.uploadedProjectFiles[index].picture;
+          this.uploadedProjectFiles.splice(index, 1);
+          if (this.dropzoneProjectRef) {
+            const dzFile = this.dropzoneProjectRef.files.find((f: any) => f.name === removedFile.name);
+            if (dzFile) {
+              this.dropzoneProjectRef.removeFile(dzFile);
+            }
+          }
+        }
+      })
+    } else {
+      const removedFile = this.uploadedProjectFiles[index].picture;
+      this.uploadedProjectFiles.splice(index, 1);
+      if (this.dropzoneProjectRef) {
+        const dzFile = this.dropzoneProjectRef.files.find((f: any) => f.name === removedFile.name);
+        if (dzFile) {
+          this.dropzoneProjectRef.removeFile(dzFile);
+        }
       }
     }
   }
@@ -193,23 +267,56 @@ export class SumouProjectsComponent implements OnInit{
   onDropzoneModelsInit(dropzone: any, modelIndex: number): void {
     this.dropzoneModelsRef[modelIndex] = dropzone;
   }
-  removeModelsFile(modelIndex: number, fileIndex: number): void {
-    const fileToRemove = this.uploadedModelsFiles[modelIndex][fileIndex];
+  removeModelsFile(modelIndex: number, fileIndex: number, fileId:any): void {
+    if(fileId){
+      this._ProjectDetailsImageService.DeleteProjectDetails(fileId).subscribe({
+        next:(res)=>{
+          Swal.fire({
+            title: 'Good job!',
+            text: 'Model Image Is Deleted Successfully!',
+            icon: 'success',
+            customClass: {
+              confirmButton: 'btn btn-primary w-xs me-2 mt-2',
+            },
+          })
+          const fileToRemove = this.uploadedModelsFiles[modelIndex][fileIndex];
 
-    // Remove from uploaded files
-    this.uploadedModelsFiles[modelIndex].splice(fileIndex, 1);
+          // Remove from uploaded files
+          this.uploadedModelsFiles[modelIndex].splice(fileIndex, 1);
 
-    // Update form control value
-    const modelsArray = this.projectForm.get('Models') as FormArray;
-    const modelGroup = modelsArray.at(modelIndex);
-    modelGroup.get('images')?.setValue([...this.uploadedModelsFiles[modelIndex]]);
+          // Update form control value
+          const modelsArray = this.projectForm.get('Models') as FormArray;
+          const modelGroup = modelsArray.at(modelIndex);
+          modelGroup.get('images')?.setValue([...this.uploadedModelsFiles[modelIndex]]);
 
-    // Remove from dropzone UI if available
-    const dropzone = this.dropzoneModelsRef[modelIndex];
-    if (dropzone) {
-      const dzFile = dropzone.files.find((f: any) => f.name === fileToRemove.name);
-      if (dzFile) {
-        dropzone.removeFile(dzFile);
+          // Remove from dropzone UI if available
+          const dropzone = this.dropzoneModelsRef[modelIndex];
+          if (dropzone) {
+            const dzFile = dropzone.files.find((f: any) => f.name === fileToRemove.name);
+            if (dzFile) {
+              dropzone.removeFile(dzFile);
+            }
+          }
+        }
+      })
+    } else {
+      const fileToRemove = this.uploadedModelsFiles[modelIndex][fileIndex];
+
+      // Remove from uploaded files
+      this.uploadedModelsFiles[modelIndex].splice(fileIndex, 1);
+
+      // Update form control value
+      const modelsArray = this.projectForm.get('Models') as FormArray;
+      const modelGroup = modelsArray.at(modelIndex);
+      modelGroup.get('images')?.setValue([...this.uploadedModelsFiles[modelIndex]]);
+
+      // Remove from dropzone UI if available
+      const dropzone = this.dropzoneModelsRef[modelIndex];
+      if (dropzone) {
+        const dzFile = dropzone.files.find((f: any) => f.name === fileToRemove.name);
+        if (dzFile) {
+          dropzone.removeFile(dzFile);
+        }
       }
     }
   }
@@ -386,7 +493,6 @@ export class SumouProjectsComponent implements OnInit{
       }
     });
   }
-
 
   updateProject():void{
     let data = this.projectForm.value
