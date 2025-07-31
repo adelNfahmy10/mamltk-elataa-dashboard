@@ -4,6 +4,17 @@
   <div class="form card p-3">
     <form class="row g-3">
       <div class="col-12 position-relative input-container">
+        <select class="form-select" name="type" id="type" (change)="selectTypeOfContracting($event)">
+          <option value="" selected disabled>إختر</option>
+          @if(!hasType1){
+            <option value="1">مقاولات</option>
+          }
+          @if(!hasType2){
+            <option value="2">مقاولك الخاص</option>
+          }
+        </select>
+      </div>
+      <div class="col-12 position-relative input-container">
         <textarea [(ngModel)]="description" class="form-control input-field" name="description" id="description" placeholder=" "></textarea>
         <div class="icon-description d-flex justify-content-start align-items-center gap-1 w-100">
           <i class="ri-pages-line fs-24 button-sm-hover-icon"></i>
@@ -38,7 +49,7 @@
       <div class="d-flex flex-column justify-content-between align-items-center">
         @if(update){
           <button class="btn btn-update" (click)="UpdateContracting()">تعديل</button>
-        } @else if(allContracting.length == 0){
+        } @else if(hideButton){
           <button class="btn btn-submit" (click)="submitContractingData()">حفظ</button>
         }
       </div>

@@ -105,7 +105,6 @@ export class SumouProjectsComponent implements OnInit{
     })
   }
 
-
   pdfFile: any;
   pdfUrl: string | null = null;
   onFileSelected(event: Event): void {

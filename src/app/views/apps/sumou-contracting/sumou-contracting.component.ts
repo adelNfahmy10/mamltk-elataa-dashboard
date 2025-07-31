@@ -44,18 +44,33 @@ export class SumouContractingComponent {
   contractingId:any= null
   contractingDataById:any= null
   update:boolean = false
+  selectType:any
+  hideButton: boolean = false;
 
   ngOnInit(): void {
     this.GetAllContracting()
+
   }
 
+  hasType1:boolean = false
+  hasType2:boolean = false
   GetAllContracting():void{
     this._ContractingService.GetAllContracting().subscribe({
       next:(res)=>{
         this.allContracting = res.data
         this.totalItems = this.allContracting.length
+        this.hasType1 = this.allContracting.some(item => item.typeId == 1);
+        this.hasType2 = this.allContracting.some(item => item.typeId == 2);
+
+        if (this.hasType1 || this.hasType2) {
+          this.hideButton = true;
+        }
       }
     })
+  }
+
+  selectTypeOfContracting(event:Event):void{
+    this.selectType = (event.target as HTMLSelectElement).value
   }
 
   // Main Header Images
@@ -100,11 +115,13 @@ export class SumouContractingComponent {
   // Submit Form Contracting
   submitContractingData():void{
     let data = {
+      Type : this.selectType,
       Description: this.description,
-      File: this.uploadedMainHeaderFiles[0],
+      File: this.uploadedMainHeaderFiles[0]
     }
 
     let formData = new FormData
+    formData.append('Type', data.Type)
     formData.append('Description', data.Description)
     formData.append('File', data.File)
 
@@ -115,6 +132,13 @@ export class SumouContractingComponent {
         this.description = '';
         this.uploadedMainHeaderFiles = [];
         this.dropzoneRef.removeAllFiles();
+        this.selectType = 0
+        const hasType1 = this.allContracting.some(item => item.typeId === 1);
+        const hasType2 = this.allContracting.some(item => item.typeId === 2);
+
+        if (hasType1 && hasType2) {
+          this.hideButton = true;
+        }
         Swal.fire({
           title: 'Good job!',
           text: 'Create Contracting Is Success!',
@@ -132,6 +156,12 @@ export class SumouContractingComponent {
     this._ContractingService.DeleteContracting(id).subscribe({
       next:(res)=>{
         this.GetAllContracting()
+        const hasType1 = this.allContracting.some(item => item.typeId === 1);
+        const hasType2 = this.allContracting.some(item => item.typeId === 2);
+
+        if (hasType1 && hasType2) {
+          this.hideButton = true;
+        }
         Swal.fire({
           title: 'Good job!',
           text: 'Delete Contracting Is Success!',
@@ -166,8 +196,6 @@ export class SumouContractingComponent {
       File : this.uploadedMainHeaderFiles[0]
     }
 
-    console.log(data);
-
     let formData = new FormData
     formData.append('Id', this.contractingId)
     formData.append('Description', this.description)
@@ -179,6 +207,7 @@ export class SumouContractingComponent {
         this.description = '';
         this.uploadedMainHeaderFiles = [];
         this.dropzoneRef.removeAllFiles();
+        this.selectType = null
         Swal.fire({
           title: 'Good job!',
           text: 'Update Contracting Is Success!',
