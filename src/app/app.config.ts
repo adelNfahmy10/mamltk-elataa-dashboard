@@ -6,7 +6,6 @@ import {
 } from '@angular/core'
 import {
   provideRouter,
-  withHashLocation,
   withInMemoryScrolling,
   type InMemoryScrollingFeature,
   type InMemoryScrollingOptions,
@@ -50,7 +49,7 @@ export const appConfig: ApplicationConfig = {
     CookieService,
     DecimalPipe,
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes, inMemoryScrollingFeatures, withHashLocation()),
+    provideRouter(routes, inMemoryScrollingFeatures),
     provideStore(rootReducer, { metaReducers: [localStorageSyncReducer] }),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
     provideEffects(AuthenticationEffects, CalendarEffects),
