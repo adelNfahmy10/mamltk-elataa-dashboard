@@ -12,6 +12,7 @@ import { NewLinePipe } from '@core/pips/newLine/new-line.pipe';
 import Editor from 'quill/core/editor';
 import { QuillEditorComponent } from "ngx-quill";
 import { ProjectDetailsImageService } from '@core/services/ProjectDetails-image/project-details-image.service';
+import { ModelsService } from '@core/services/models/models.service';
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
  // Change this to your upload POST address:
@@ -52,6 +53,7 @@ export class SumouProjectsComponent implements OnInit{
   private readonly _FormBuilder = inject(FormBuilder)
   private readonly _ProjectsService = inject(ProjectsService)
   private readonly _ProjectDetailsImageService = inject(ProjectDetailsImageService)
+  private readonly _ModelsService = inject(ModelsService)
   private modalService = inject(NgbModal)
 
   allProjects:IProject[] = []
@@ -103,6 +105,25 @@ export class SumouProjectsComponent implements OnInit{
     })
   }
 
+
+  pdfFile: any;
+  pdfUrl: string | null = null;
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    this.pdfFile = file
+
+    if (file && file.type === 'application/pdf') {
+      this.pdfUrl = URL.createObjectURL(file);
+    } else {
+      this.pdfUrl = null;
+      Swal.fire({
+        icon:'error',
+        title:'من فضلك اختر ملف PDF'
+      })
+    }
+  }
+
   // Main Header Images
   uploadedMainHeaderFiles: any[] = []
   dropzoneRef: any = null;
@@ -122,34 +143,16 @@ export class SumouProjectsComponent implements OnInit{
 
   // Upload Header Files
   onUploadSuccess(event: any): void {
-    if(this.projectId){
-      let data = {
-        type:1,
-        picture : event[0]
-      }
-      let formData = new FormData()
-      formData.append('Type', data.type.toString()),
-      formData.append('Picture', data.picture),
-
-      this._ProjectDetailsImageService.CreateProjectDetailsInProject(this.projectId, formData).subscribe({
-        next:(res)=>{
-          this.uploadedMainHeaderFiles.push(data)
-        }
-      })
-    } else {
-      this.uploadedMainHeaderFiles.push({
-        type:1,
-        picture : event[0]
-      })
-    }
+    this.uploadedMainHeaderFiles.push({
+      type:1,
+      picture : event[0]
+    })
   }
-
   // File Remove
   onDropzoneInit(dropzone: any): void {
     this.dropzoneRef = dropzone;
 
   }
-
   removeFile(index: number, fileId:any) {
     if(fileId){
       this._ProjectDetailsImageService.DeleteProjectDetails(fileId).subscribe({
@@ -206,12 +209,10 @@ export class SumouProjectsComponent implements OnInit{
       picture : event[0]
     })
   }
-
   // File Remove
   onDropzoneProjectInit(dropzone: any): void {
     this.dropzoneProjectRef = dropzone;
   }
-
   removeProjectFile(index: number, fileId:any) {
     if(fileId){
       this._ProjectDetailsImageService.DeleteProjectDetails(fileId).subscribe({
@@ -256,9 +257,7 @@ export class SumouProjectsComponent implements OnInit{
     if (!this.uploadedModelsFiles[modelIndex]) {
       this.uploadedModelsFiles[modelIndex] = [];
     }
-
     this.uploadedModelsFiles[modelIndex].push(event[0]);
-
     const modelsArray = this.projectForm.get('Models') as FormArray;
     const modelGroup = modelsArray.at(modelIndex);
     modelGroup.get('images')?.setValue([...this.uploadedModelsFiles[modelIndex]]);
@@ -332,6 +331,7 @@ export class SumouProjectsComponent implements OnInit{
     Area: [''],
     Type: [''],
     Space: [''],
+    ProjectFile: [''],
     Objects: [''],
     Models: this._FormBuilder.array([]),
   })
@@ -339,6 +339,7 @@ export class SumouProjectsComponent implements OnInit{
   // Create Model Object
   createModelGroup(): FormGroup {
     return this._FormBuilder.group({
+      id:[''],
       space: [''],
       price: [''],
       pathRoomNumber: [''],
@@ -364,14 +365,30 @@ export class SumouProjectsComponent implements OnInit{
   }
 
   // Remove Model
-  removeModel(index: number): void {
-    this.modelsArray.removeAt(index);
-
-    this.uploadedModelsFiles.splice(index, 1);
-
-    this.dropzoneModelsRef.splice(index, 1);
-
-    this.showParkingInput.splice(index, 1);
+  removeModel(index: number, modelId:any): void {
+    if(modelId){
+      this._ModelsService.DeleteModel(modelId).subscribe({
+        next:(res)=>{
+          this.modelsArray.removeAt(index);
+          this.uploadedModelsFiles.splice(index, 1);
+          this.dropzoneModelsRef.splice(index, 1);
+          this.showParkingInput.splice(index, 1);
+          Swal.fire({
+            title: 'Good job!',
+            text: 'Remove Models Is Successfully!',
+            icon: 'success',
+            customClass: {
+              confirmButton: 'btn btn-primary w-xs me-2 mt-2',
+            },
+          })
+        }
+      })
+    } else{
+      this.modelsArray.removeAt(index);
+      this.uploadedModelsFiles.splice(index, 1);
+      this.dropzoneModelsRef.splice(index, 1);
+      this.showParkingInput.splice(index, 1);
+    }
   }
 
   // Toggle Parking
@@ -382,6 +399,7 @@ export class SumouProjectsComponent implements OnInit{
   // Submit Project Form
   submitProjectForm():void{
     let data = this.projectForm.value
+    data.ProjectFile = this.pdfFile
     data.Objects = [...this.uploadedProjectFiles, ...this.uploadedMainHeaderFiles]
     data.Models.images = [...this.uploadedModelsFiles]
     if(!this.showParkingInput){
@@ -398,6 +416,8 @@ export class SumouProjectsComponent implements OnInit{
     formData.append('Area', data.Area);
     formData.append('Type', data.Type);
     formData.append('Space', data.Space);
+    formData.append('ProjectFile', data.ProjectFile);
+
     data.Objects.forEach((img:any, index:any) => {
       formData.append(`Objects[${index}].picture`, img.picture);
       formData.append(`Objects[${index}].type`, img.type);
@@ -412,7 +432,7 @@ export class SumouProjectsComponent implements OnInit{
       formData.append(`Models[${index}].title`, model.title);
       formData.append(`Models[${index}].parking`, model.parking);
 
-      model.images.forEach((img: any, imgIndex: number) => {
+      model.images.forEach((img: any) => {
         formData.append(`Models[${index}].images`, img);
       });
     });
@@ -425,6 +445,8 @@ export class SumouProjectsComponent implements OnInit{
         this.uploadedProjectFiles = []
         this.dropzoneRef.removeAllFiles();
         this.dropzoneProjectRef.removeAllFiles();
+        this.pdfFile = null
+
         Swal.fire({
           title: 'Good job!',
           text: 'Create Project Is Successed!',
@@ -435,7 +457,6 @@ export class SumouProjectsComponent implements OnInit{
         })
       }
     })
-
   }
 
   deleteProject(id:number):void{
@@ -472,7 +493,8 @@ export class SumouProjectsComponent implements OnInit{
           RoomNumbers: data.roomNumbers,
           Area: data.area,
           Type: data.type,
-          Space: data.space
+          Space: data.space,
+          ProjectFile: data.projectFile
         });
 
         this.uploadedMainHeaderFiles = data.projectDetails
@@ -490,6 +512,30 @@ export class SumouProjectsComponent implements OnInit{
             type: 2,
             picture: item.picture
           }));
+
+        const modelsArray = this.projectForm.get('Models') as FormArray;
+        modelsArray.clear();
+        data.models.forEach((model: any) => {
+          this.modelsArray.push(this._FormBuilder.group({
+            id: [model.id],
+            title: [model.title],
+            price: [model.price],
+            roomNumbers: [model.roomNumbers],
+            space: [model.space],
+            parking: [model.parking],
+            floor: [model.floor],
+            pathRoomNumber: [model.pathRoomNumber],
+            city: [model.city],
+            area: [model.area],
+            location: [model.location],
+            images: [model.images]
+          }));
+        });
+
+        this.uploadedModelsFiles = [];
+        data.models.forEach((model: any, index: number) => {
+          this.uploadedModelsFiles[index] = model.images || [];
+        });
       }
     });
   }
@@ -497,6 +543,7 @@ export class SumouProjectsComponent implements OnInit{
   updateProject():void{
     let data = this.projectForm.value
     data.Id = this.projectId
+    data.ProjectFile = this.pdfFile
     data.Objects = [...this.uploadedProjectFiles, ...this.uploadedMainHeaderFiles]
 
     const formData = new FormData();
@@ -510,10 +557,34 @@ export class SumouProjectsComponent implements OnInit{
     formData.append('Area', data.Area);
     formData.append('Type', data.Type);
     formData.append('Space', data.Space);
+    formData.append('ProjectFile', data.ProjectFile);
     data.Objects.forEach((img:any, index:any) => {
-      formData.append(`Objects[${index}].id`, img.id || 0);
-      formData.append(`Objects[${index}].type`, img.type);
-      formData.append(`Objects[${index}].picture`, img.picture);
+      if(!img.id){
+        formData.append(`Objects[${index}].id`, img.id || 0);
+        formData.append(`Objects[${index}].type`, img.type);
+        formData.append(`Objects[${index}].pictureFile`, img.picture);
+      }
+    });
+
+    data.Models.forEach((model: any, index: number) => {
+      formData.append(`Models[${index}].id`, model.id || 0);
+      formData.append(`Models[${index}].space`, model.space);
+      formData.append(`Models[${index}].price`, model.price);
+      formData.append(`Models[${index}].pathRoomNumber`, model.pathRoomNumber);
+      formData.append(`Models[${index}].floor`, model.floor);
+      formData.append(`Models[${index}].roomNumbers`, model.roomNumbers);
+      formData.append(`Models[${index}].title`, model.title);
+      formData.append(`Models[${index}].parking`, model.parking);
+      formData.append(`Models[${index}].Location`, data.Location);
+      formData.append(`Models[${index}].Area`, data.Area);
+      formData.append(`Models[${index}].City`, data.City);
+
+      model.images.forEach((img: any, i:number) => {
+        if(typeof img != 'string'){
+          formData.append(`Models[${index}].newImages[${i}].id`, img.id || 0);
+          formData.append(`Models[${index}].newImages[${i}].file`, img);
+        }
+      });
     });
 
 
@@ -525,6 +596,8 @@ export class SumouProjectsComponent implements OnInit{
         this.uploadedProjectFiles = []
         this.dropzoneRef.removeAllFiles();
         this.dropzoneProjectRef.removeAllFiles();
+        this.modelsArray.clear();
+        this.pdfFile = null
         Swal.fire({
           title: 'Good job!',
           text: 'Update Project Is Successed!',
@@ -551,7 +624,7 @@ export class SumouProjectsComponent implements OnInit{
     this.getProjectDataById(id)
   }
 
-  selectedFilter: string = 'الكل';
+  selectedFilter: string = 'مشاريع التمليك';
 
   onFilterChange(value: string) {
     this.selectedFilter = value;
@@ -596,4 +669,5 @@ export class SumouProjectsComponent implements OnInit{
       [{ header: 1 }, { header: 2 }],
     ],
   }
+
 }

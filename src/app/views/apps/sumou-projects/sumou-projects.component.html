@@ -4,51 +4,65 @@
   <h1>إضافة مشروع التمليك</h1>
   <div class="form card p-3">
     <form class="row g-3" [formGroup]="projectForm">
-      <h3>الصورة الرئيسية</h3>
-      <div class="my-2">
-        <dropzone
-          [config]="customDropzoneConfig"
-          (success)="onUploadSuccess($event)"
-          [message]="dropzoneMsg"
-          (init)="onDropzoneInit($event)"
-          class="dropzone"
-        >
-        </dropzone>
+      <div class="col-md-9">
+        <h3>الصورة الرئيسية</h3>
+        <div class="my-2">
+          <dropzone
+            [config]="customDropzoneConfig"
+            (success)="onUploadSuccess($event)"
+            [message]="dropzoneMsg"
+            (init)="onDropzoneInit($event)"
+            class="dropzone"
+          >
+          </dropzone>
 
-        <div class="row g-3" *ngIf="uploadedMainHeaderFiles.length > 0">
-          <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let file of uploadedMainHeaderFiles; let i = index" >
-            <div class="h-100 position-relative">
-             <img
-                [src]="file.picture?.dataURL || file.picture"
-                class="card-img-top object-fit-cover img-thumbnail"
-                alt="project-image"
-                style="height: 150px; object-fit: cover; border-bottom: 1px solid #ddd;"
-              />
-              <div class="remove-btn position-absolute cr bg-danger rounded-circle d-flex justify-content-center align-items-center" (click)="removeFile(i, file.id)">
-                <i class='bx bx-x text-white fs-4'></i>
+          <div class="row g-3" *ngIf="uploadedMainHeaderFiles.length > 0">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let file of uploadedMainHeaderFiles; let i = index" >
+              <div class="h-100 position-relative">
+              <img
+                  [src]="file.picture?.dataURL || file.picture"
+                  class="card-img-top object-fit-cover img-thumbnail"
+                  alt="project-image"
+                  style="height: 150px; object-fit: cover; border-bottom: 1px solid #ddd;"
+                />
+                <div class="remove-btn position-absolute cr bg-danger rounded-circle d-flex justify-content-center align-items-center" (click)="removeFile(i, file.id)">
+                  <i class='bx bx-x text-white fs-4'></i>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <h3>صور المشروع</h3>
-      <div class="my-2">
-        <dropzone
-          [config]="customDropzoneConfig"
-          (success)="onUploadProjectSuccess($event)"
-          [message]="dropzoneMsg"
-          (init)="onDropzoneProjectInit($event)"
-          class="dropzone"
-        >
-        </dropzone>
+      <div class="col-md-3">
+        <h3>ملف المشروع</h3>
+        <input class="form-control" accept="application/pdf" (change)="onFileSelected($event)" type="file" name="" id="">
+        <div *ngIf="pdfUrl" class="mt-3 d-flex justify-content-center align-items-center">
+          <a [href]="pdfUrl" target="_blank">
+            <i class="fa-solid fa-file-pdf text-danger"></i>
+          </a>
+        </div>
+      </div>
 
-        <div class="row g-3" *ngIf="uploadedProjectFiles.length > 0">
-          <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let file of uploadedProjectFiles; let i = index" >
-            <div class="h-100 position-relative">
-              <img [src]="file.picture?.dataURL || file.picture " class="card-img-top object-fit-cover img-thumbnail" alt="{{ file.name }}" style="height: 150px; object-fit: cover; border-bottom: 1px solid #ddd;" />
-              <div class="remove-btn position-absolute cr bg-danger rounded-circle d-flex justify-content-center align-items-center" (click)="removeProjectFile(i, file.id)">
-                <i class='bx bx-x text-white fs-4'></i>
+      <div class="col-12">
+        <h3>صور المشروع</h3>
+        <div class="my-2">
+          <dropzone
+            [config]="customDropzoneConfig"
+            (success)="onUploadProjectSuccess($event)"
+            [message]="dropzoneMsg"
+            (init)="onDropzoneProjectInit($event)"
+            class="dropzone"
+          >
+          </dropzone>
+
+          <div class="row g-3" *ngIf="uploadedProjectFiles.length > 0">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let file of uploadedProjectFiles; let i = index" >
+              <div class="h-100 position-relative">
+                <img [src]="file.picture?.dataURL || file.picture " class="card-img-top object-fit-cover img-thumbnail" alt="{{ file.name }}" style="height: 150px; object-fit: cover; border-bottom: 1px solid #ddd;" />
+                <div class="remove-btn position-absolute cr bg-danger rounded-circle d-flex justify-content-center align-items-center" (click)="removeProjectFile(i, file.id)">
+                  <i class='bx bx-x text-white fs-4'></i>
+                </div>
               </div>
             </div>
           </div>
@@ -146,7 +160,7 @@
           <div class="row g-3 border border-2 rounded mb-4 position-relative pb-2" *ngFor="let model of modelsArray.controls; let i = index" [formGroupName]="i" >
             <div class="d-flex align-items-center gap-3">
               @if(i > 0){
-                <i class="ri-close-circle-line fs-3 text-danger cr icon-close mt-0" (click)="removeModel(i)"></i>
+                <i class="ri-close-circle-line fs-3 text-danger cr icon-close mt-0" (click)="removeModel(i, model.get('id')?.value)"></i>
               }
               <h3 class="my-0">نموذج {{i + 1}}</h3>
             </div>
@@ -166,7 +180,7 @@
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let file of uploadedModelsFiles[i]; let j = index" >
                   <div class="h-100 position-relative">
                     <img
-                      [src]="file?.dataURL || file"
+                       [src]="file?.dataURL || file.picture || file"
                       class="card-img-top object-fit-cover img-thumbnail"
                       alt="وحدات سكنية"
                       style="height: 150px; object-fit: cover; border-bottom: 1px solid #ddd;"
@@ -436,3 +450,47 @@
     </div>
   </div>
 </ng-template>
+
+
+<!-- <button (click)="open(content)" type="button" class="btn btn-primary">
+  Launch demo modal
+</button>
+
+<ng-template
+  #content
+  let-modal
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+      <button
+        (click)="modal.close('click')"
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="modal"
+        aria-label="Close"
+      ></button>
+    </div>
+    <div class="modal-body">
+      <p>Woo-hoo, you're reading this text in a modal!</p>
+    </div>
+    <div class="modal-footer">
+      <button
+        (click)="modal.close('click')"
+        type="button"
+        class="btn btn-secondary"
+        data-bs-dismiss="modal"
+      >
+        Close
+      </button>
+      <button type="button" class="btn btn-primary">
+        Save changes
+      </button>
+    </div>
+  </div>
+</ng-template> -->
