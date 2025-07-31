@@ -3,19 +3,27 @@
 <section class="contact-sumou">
   <div class="form card p-3">
     <form class="row g-3" [formGroup]="contactForm">
-      <div class="col-md-6 col-12 position-relative input-container">
-        <input type="tel" formControlName="phone1" class="form-control input-field" name="phone1" id="phone1" placeholder=" ">
+      <div class="col-md-4 col-12 position-relative input-container">
+        <input type="tel" formControlName="whatsapp" class="form-control input-field" name="whatsapp" id="whatsapp" placeholder=" ">
         <div class="icon-title d-flex justify-content-start align-items-center gap-1 w-100">
-            <i class="ri-phone-line fs-24 button-sm-hover-icon"></i>
-          <span>التليفون 1</span>
+            <i class="ri-whatsapp-line fs-24 button-sm-hover-icon"></i>
+          <span>الواتساب</span>
         </div>
       </div>
 
-      <div class="col-md-6 col-12 position-relative input-container">
-        <input type="tel" formControlName="phone2" class="form-control input-field" name="phone2" id="phone2" placeholder=" ">
+      <div class="col-md-4 col-12 position-relative input-container">
+        <input type="tel" formControlName="phoneNumber" class="form-control input-field" name="phoneNumber" id="phoneNumber" placeholder=" ">
         <div class="icon-title d-flex justify-content-start align-items-center gap-1 w-100">
             <i class="ri-phone-line fs-24 button-sm-hover-icon"></i>
-            <span>التليفون 2</span>
+            <span>التليفون</span>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-12 position-relative input-container">
+        <input type="text" formControlName="email" class="form-control input-field" name="email" id="email" placeholder=" ">
+        <div class="icon-title d-flex justify-content-start align-items-center gap-1 w-100">
+          <i class="ri-mail-add-fill fs-24 button-sm-hover-icon"></i>
+          <span>البريد الإلكتروني</span>
         </div>
       </div>
 
@@ -84,8 +92,9 @@
             <table class="table align-middle text-nowrap table-hover table-centered mb-0">
               <thead class="bg-light-subtle">
                 <tr>
-                  <th>التليفون 1</th>
-                  <th>التليفون 2</th>
+                  <th>الواتساب</th>
+                  <th>رقم التليفون</th>
+                  <th>البريد الإلكتروني</th>
                   <th>العنوان</th>
                   <th>رابط الفيسبوك</th>
                   <th>رابط تويتر</th>
@@ -97,8 +106,9 @@
               <tbody>
                 @for (item of pagedData; track $index) {
                   <tr>
-                    <td>{{ item.phone1 }}</td>
-                    <td>{{ item.phone2 }}</td>
+                    <td class="number">{{ item.whatsApp }}</td>
+                    <td class="number">{{ item.phoneNumber }}</td>
+                    <td>{{ item.email }}</td>
                     <td>{{ item.address }}</td>
                     <td>{{ item.facebookUrl }}</td>
                     <td>{{ item.twitterUrl }}</td>

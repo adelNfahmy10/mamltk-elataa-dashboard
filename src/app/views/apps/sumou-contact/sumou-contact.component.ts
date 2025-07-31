@@ -43,8 +43,9 @@ private readonly _ContactService = inject(ContactService)
   }
 
   contactForm:FormGroup = this._FormBuilder.group({
-    phone1:[''],
-    phone2:[''],
+    whatsapp:[''],
+    phoneNumber:[''],
+    email:[''],
     address:[''],
     facebookUrl:[''],
     twitterUrl:[''],

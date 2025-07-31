@@ -174,18 +174,18 @@ export const MENU_ITEMS: MenuItemType[] = [
     icon: 'ri-building-2-line',
     url: '/about',
   },
-  {
-    key: 'contracting',
-    label: 'المقاولات',
-    icon: 'ri-building-2-line',
-    url: '/contracting',
-  },
-  {
-    key: 'configuration',
-    label: 'طلب التواصل',
-    icon: 'ri-building-2-line',
-    url: '/configuration',
-  },
+  // {
+  //   key: 'contracting',
+  //   label: 'المقاولات',
+  //   icon: 'ri-building-2-line',
+  //   url: '/contracting',
+  // },
+  // {
+  //   key: 'configuration',
+  //   label: 'طلب التواصل',
+  //   icon: 'ri-building-2-line',
+  //   url: '/configuration',
+  // },
   {
     key: 'contact',
     label: 'تواصل معنا',

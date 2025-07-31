@@ -181,6 +181,7 @@ export class SumouContractingComponent {
     this._ContractingService.GetContractingById(this.contractingId).subscribe({
       next: (res) => {
         const data = res.data;
+        this.selectType = data.typeId;
         this.description = data.description;
         this.uploadedMainHeaderFiles[0] = data.fileUrl
         this.update = true;
@@ -192,12 +193,14 @@ export class SumouContractingComponent {
   UpdateContracting():void{
     let data = {
       Id : this.contractingId,
+      Type : this.selectType,
       Description : this.description,
       File : this.uploadedMainHeaderFiles[0]
     }
 
     let formData = new FormData
     formData.append('Id', this.contractingId)
+    formData.append('Type', this.selectType)
     formData.append('Description', this.description)
     formData.append('File', this.uploadedMainHeaderFiles[0])
 
@@ -207,7 +210,8 @@ export class SumouContractingComponent {
         this.description = '';
         this.uploadedMainHeaderFiles = [];
         this.dropzoneRef.removeAllFiles();
-        this.selectType = null
+        this.selectType = 0
+        this.update = false
         Swal.fire({
           title: 'Good job!',
           text: 'Update Contracting Is Success!',
