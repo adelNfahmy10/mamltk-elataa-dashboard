@@ -14,11 +14,12 @@ import {
   NgProgressModule,
   type NgProgressRef,
 } from 'ngx-progressbar'
+import { NgxSpinnerComponent } from "ngx-spinner";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NgProgressModule],
+  imports: [RouterOutlet, NgProgressModule, NgxSpinnerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })

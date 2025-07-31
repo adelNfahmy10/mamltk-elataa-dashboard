@@ -119,7 +119,7 @@
     ora "5.4.1"
     rxjs "7.8.1"
 
-"@angular/animations@^18.0.0", "@angular/animations@18.2.4":
+"@angular/animations@^18.0.0", "@angular/animations@>=15.0.0", "@angular/animations@18.2.4":
   version "18.2.4"
   resolved "https://registry.npmjs.org/@angular/animations/-/animations-18.2.4.tgz"
   integrity sha512-ajjXpLD+SyxbHnmhj2ZvYpXneviOjcBgU9L2UX4OVS0jVWxCNHLhJrcMqtqFHA6U5fPnhPNR9cmnt6tmqri0rA==
@@ -180,7 +180,7 @@
     symbol-observable "4.0.0"
     yargs "17.7.2"
 
-"@angular/common@^18.0.0", "@angular/common@^18.0.0 || ^19.0.0", "@angular/common@^18.0.0-rc.0", "@angular/common@^18.0.1", "@angular/common@^19.0.0", "@angular/common@>=12.0.0", "@angular/common@>=13.0.0", "@angular/common@>=14.0.0", "@angular/common@>=14.x", "@angular/common@>=16.0.0", "@angular/common@>=16.0.0-0", "@angular/common@>=9.0.0", "@angular/common@12 - 18", "@angular/common@18.2.4":
+"@angular/common@^18.0.0", "@angular/common@^18.0.0 || ^19.0.0", "@angular/common@^18.0.0-rc.0", "@angular/common@^18.0.1", "@angular/common@^19.0.0", "@angular/common@>=12.0.0", "@angular/common@>=13.0.0", "@angular/common@>=14.0.0", "@angular/common@>=14.x", "@angular/common@>=15.0.0", "@angular/common@>=16.0.0", "@angular/common@>=16.0.0-0", "@angular/common@>=9.0.0", "@angular/common@12 - 18", "@angular/common@18.2.4":
   version "18.2.4"
   resolved "https://registry.npmjs.org/@angular/common/-/common-18.2.4.tgz"
   integrity sha512-flUaKhdr8KvtjH0cLC6Rrjirt8GsiFlrmZLZplr784O3Gkei2VBBNFoopgmlEzbVGPiIG5QlFZH9yvah6JPQZw==
@@ -208,7 +208,7 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular/core@^18.0.0", "@angular/core@^18.0.0 || ^19.0.0", "@angular/core@^18.0.0-rc.0", "@angular/core@^18.0.1", "@angular/core@^19.0.0", "@angular/core@>=12.0.0", "@angular/core@>=13.0.0", "@angular/core@>=14.0.0", "@angular/core@>=14.x", "@angular/core@>=16.0.0", "@angular/core@>=16.0.0-0", "@angular/core@>=17.0.0", "@angular/core@>=9.0.0", "@angular/core@12 - 18", "@angular/core@18.2.4":
+"@angular/core@^18.0.0", "@angular/core@^18.0.0 || ^19.0.0", "@angular/core@^18.0.0-rc.0", "@angular/core@^18.0.1", "@angular/core@^19.0.0", "@angular/core@>=12.0.0", "@angular/core@>=13.0.0", "@angular/core@>=14.0.0", "@angular/core@>=14.x", "@angular/core@>=15.0.0", "@angular/core@>=16.0.0", "@angular/core@>=16.0.0-0", "@angular/core@>=17.0.0", "@angular/core@>=9.0.0", "@angular/core@12 - 18", "@angular/core@18.2.4":
   version "18.2.4"
   resolved "https://registry.npmjs.org/@angular/core/-/core-18.2.4.tgz"
   integrity sha512-ulYmYpI/ZVQ5BL38rBy4DS/9wgGWmVD9Uo6tcrLqCzt1G1G2nKwseZv009536pHfk6dj2HdPSkpcerhWh57DWw==
@@ -4908,6 +4908,13 @@ ngx-quill@^26.0.8:
   version "26.0.8"
   resolved "https://registry.npmjs.org/ngx-quill/-/ngx-quill-26.0.8.tgz"
   integrity sha512-Yt35k3Tzs6hEE1XzOU10K/nSD5+pvN944zPJ13Ux/tVouM1bZ2QffEWWHrmC3fqEBsLA//ltbxmf+TfGk9rLuw==
+  dependencies:
+    tslib "^2.3.0"
+
+ngx-spinner@^17.0.0:
+  version "17.0.0"
+  resolved "https://registry.npmjs.org/ngx-spinner/-/ngx-spinner-17.0.0.tgz"
+  integrity sha512-VWDSvLlCnaWqu0W1L+ybQIRHTbd+GffkX1sWs++iMPXMGVJ2ZCuzW32FHnu+p0regMUHU8r1/rvUcFD0YooJxQ==
   dependencies:
     tslib "^2.3.0"
 

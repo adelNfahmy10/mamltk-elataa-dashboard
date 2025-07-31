@@ -165,13 +165,13 @@ export const MENU_ITEMS: MenuItemType[] = [
   {
     key: 'previous-projects',
     label: 'أعمالنا السابقة',
-    icon: 'ri-building-2-line',
+    icon: 'ri-building-3-line',
     url: '/previous-projects',
   },
   {
     key: 'about',
     label: 'من نحن',
-    icon: 'ri-building-2-line',
+    icon: 'ri-contacts-line',
     url: '/about',
   },
   // {
@@ -189,13 +189,13 @@ export const MENU_ITEMS: MenuItemType[] = [
   {
     key: 'contact',
     label: 'تواصل معنا',
-    icon: 'ri-building-2-line',
+    icon: 'ri-contacts-book-line',
     url: '/contact',
   },
   {
     key: 'book',
     label: 'طلبات الحجز',
-    icon: 'ri-building-2-line',
+    icon: 'ri-book-line',
     url: '/book',
   }
   // {
