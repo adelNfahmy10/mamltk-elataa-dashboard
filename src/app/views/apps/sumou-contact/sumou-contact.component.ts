@@ -43,14 +43,15 @@ private readonly _ContactService = inject(ContactService)
   }
 
   contactForm:FormGroup = this._FormBuilder.group({
-    whatsapp:[''],
+    whatsApp:[''],
     phoneNumber:[''],
     email:[''],
-    address:[''],
     facebookUrl:[''],
-    twitterUrl:[''],
-    linkedInUrl:[''],
     instagramUrl:[''],
+    twitterUrl:[''],
+    tiktokUrl:[''],
+    snapchatUrl:[''],
+    address:[''],
   })
 
   submitContactForm():void{
